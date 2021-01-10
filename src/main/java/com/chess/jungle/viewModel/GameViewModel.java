@@ -42,6 +42,10 @@ public class GameViewModel {
     public void setSelectedPiece(Piece piece) {
         this.selectedPiece.setValue(piece);
     }
+
+    public LiveData<Exception> getError() {
+        return error;
+    }
     
     public void setError(Exception e) {
         error.setValue(e);

@@ -6,6 +6,7 @@ import java.util.List;
 /**
  *
  * @author Chengjie Luo
+ * @param <T> Observed data type 
  */
 public class LiveData<T> {
 
@@ -35,9 +36,9 @@ public class LiveData<T> {
     }
 
     public void inform() {
-        for (Observer observer : this.observerList) {
+        this.observerList.forEach(observer -> {
             observer.onChanged(value);
-        }
+        });
     }
 
     public T get() {
