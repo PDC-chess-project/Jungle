@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  *
- * @author CommA
+ * @author Chengjie Luo
  */
 public class LiveData<T> {
 

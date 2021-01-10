@@ -1,24 +1,19 @@
 package com.chess.jungle.logic;
 
-import com.chess.jungle.ui.Drawable;
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-
 /**
  *
- * @author CommA
+ * @author Chengjie Luo
  */
-public class Board implements Drawable {
+public class Board {
 
-    enum SquareType {
+    public enum SquareType {
         NORMAL,
         DEN,
         TRAP,
         RIVER
     }
 
-    SquareType[][] grid = new SquareType[7][];
+    protected SquareType[][] grid = new SquareType[7][];
 
     public Board() {
         for (int i = 0; i < grid.length; i++) {
@@ -48,29 +43,15 @@ public class Board implements Drawable {
         }
     }
 
-    @Override
-    public void draw(Graphics2D g) {
-        FontMetrics metrics = g.getFontMetrics(g.getFont());
-        int d = metrics.getAscent();
+    public SquareType[][] getGrid() {
+        return grid;
+    }
 
-        for (int i = 0; i < grid.length; i++) {
-            SquareType[] column = grid[i];
-            for (int j = 0; j < column.length; j++) {
-                g.setColor(Color.red);
-                g.drawRect(i * 50, j * 50, 50, 50);
-                SquareType squareType = grid[i][j];
-                switch (squareType) {
-                    case TRAP:
-                        g.drawString("阱", i * 50, j * 50 + d);
-                        break;
-                    case DEN:
-                        g.drawString("营", i * 50, j * 50 + d);
-                        break;
-                    case RIVER:
-                        g.drawString("河", i * 50, j * 50 + d);
-                        break;
-                }
-            }
-        }
+    public int getWidth() {
+        return grid.length;
+    }
+
+    public int getHeight() {
+        return getWidth() > 0 ? grid[0].length : 0;
     }
 }

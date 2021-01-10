@@ -1,41 +1,30 @@
 package com.chess.jungle.logic;
 
-import com.chess.jungle.ui.Drawable;
-import java.awt.Graphics2D;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  *
- * @author CommA
+ * @author Chengjie Luo
  */
-public class JungleGame implements Drawable {
-    
-    public static class Position {
-        
-        protected int x;
-        protected int y;
-        
-        public Position(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-        
-        @Override
-        public int hashCode() {
-            return x + y * 100;
-        }
-    }
-    
+public class JungleGame {
+
     protected Board board = new Board();
-    protected Map<Position, Piece> pieceList = new HashMap<>();
-    
-    public Piece getPiece(int x, int y) {
-        return pieceList.get(new Position(x, y));
+    protected List<Piece> pieceList = new ArrayList<>();
+
+    public JungleGame() {
+        pieceList.add(new Piece(Piece.Type.MOUSE, 0, 2));
+        pieceList.add(new Piece(Piece.Type.CAT, 5, 1));
+        pieceList.add(new Piece(Piece.Type.WOLF, 4, 2));
+        pieceList.add(new Piece(Piece.Type.DOG, 1, 1));
     }
-    
-    @Override
-    public void draw(Graphics2D g) {
-        board.draw(g);
+
+    public Collection<Piece> getPieceList() {
+        return pieceList;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 }

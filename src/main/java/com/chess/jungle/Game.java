@@ -4,7 +4,7 @@ import com.chess.jungle.ui.MainWindow;
 
 /**
  *
- * @author CommA
+ * @author Chengjie Luo
  */
 public class Game {
 

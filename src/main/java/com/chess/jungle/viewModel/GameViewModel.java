@@ -6,7 +6,7 @@ import com.chess.jungle.utils.LiveData;
 
 /**
  *
- * @author CommA
+ * @author Chengjie Luo
  */
 public class GameViewModel {
 
@@ -22,10 +22,12 @@ public class GameViewModel {
         return instance;
     }
 
-    LiveData<JungleGame> currentGame = new LiveData<>();
-    LiveData<Piece> selectedPiece = new LiveData<>();
+    protected LiveData<Exception> error = new LiveData<>();
 
-    public LiveData<JungleGame> getCurrentChessGame() {
+    protected LiveData<JungleGame> currentGame = new LiveData<>();
+    protected LiveData<Piece> selectedPiece = new LiveData<>();
+
+    public LiveData<JungleGame> getCurrentJungleGame() {
         return currentGame;
     }
 
@@ -33,7 +35,21 @@ public class GameViewModel {
         currentGame.setValue(game);
     }
 
+    public LiveData<Piece> getSelectedPiece() {
+        return selectedPiece;
+    }
+
+    public void setSelectedPiece(Piece piece) {
+        this.selectedPiece.setValue(piece);
+    }
+    
+    public void setError(Exception e) {
+        error.setValue(e);
+    }
+
     public void clear() {
         currentGame.clear();
+        selectedPiece.clear();
+        error.clear();
     }
 }
