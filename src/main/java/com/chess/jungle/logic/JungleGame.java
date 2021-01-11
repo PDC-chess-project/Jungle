@@ -38,8 +38,28 @@ public class JungleGame {
         return board;
     }
 
-    public void getPossibleMove(Piece piece) {
-        
+    /**
+     * 当前棋子所有可移动到的坐标
+     * @param piece 棋子
+     * @return 所有可移动到的坐标
+     */
+    public Coordinate[] getPossibleMove(Piece piece) {
+        ArrayList<Coordinate> res = new ArrayList<>();
+        Coordinate tmp;
+        if((tmp = isMovable(piece,Direction.UP)) != null){
+            res.add(tmp);
+        }
+        if((tmp = isMovable(piece,Direction.DOWN)) != null){
+            res.add(tmp);
+        }
+        if((tmp = isMovable(piece,Direction.LEFT)) != null){
+            res.add(tmp);
+        }
+        if((tmp = isMovable(piece,Direction.RIGHT)) != null){
+            res.add(tmp);
+        }
+
+        return res.toArray(new Coordinate[0]);
     }
 
     public void movePiece(Piece piece,int x,int y){
@@ -50,9 +70,9 @@ public class JungleGame {
      * 判断这个棋子是否可以朝一个方向移动
      * @param piece 棋子
      * @param direction 方向
-     * @return 是否可以朝这个方向移动
+     * @return 是否可以朝这个方向移动，是则返回移动后的坐标，否则返回null
      */
-    private boolean isMovable(Piece piece, Direction direction){
+    private Coordinate isMovable(Piece piece, Direction direction){
         Board board = Board.getInstance();
         Coordinate next = new Coordinate(piece.x,piece.y).nextPace(direction);
         int nextX = next.x;
@@ -60,11 +80,11 @@ public class JungleGame {
 
         if(nextX < 0 || nextX > board.getWidth() - 1){
             //如果超出宽度
-            return false;
+            return null;
         }
         if(nextY < 0 || nextY > board.getHeight() - 1){
             //如果超出长度
-            return false;
+            return null;
         }
         if(board.isRiver(nextX,nextY)){
             //如果是河流
@@ -72,7 +92,7 @@ public class JungleGame {
                 //如果是狮子或老虎
                 if(hasBlockInRiver(piece.x, piece.y, direction)){
                     //如果河中间有老鼠阻挡，无法跳跃
-                    return false;
+                    return null;
                 }
                 //获取河对岸坐标
                 Coordinate coordinate = board.getOppositeShore(piece.x,piece.y,direction);
@@ -80,16 +100,17 @@ public class JungleGame {
                 nextY = coordinate.y;
             }else if(piece.type != Piece.Type.MOUSE){
                 //如果不是老鼠、狮子、老虎
-                return false;
+                return null;
             }
         }
 
         Piece target = getPieceByPos(nextX,nextY);
-        if(target != null){
-            return piece.isEdible(target);
+        if(target != null && !piece.isEdible(target)){
+            //如果对手存在并且无法打败
+            return null;
         }
 
-        return true;
+        return new Coordinate(nextX,nextY);
     }
 
     /**
