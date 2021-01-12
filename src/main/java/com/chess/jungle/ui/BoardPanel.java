@@ -23,7 +23,7 @@ public final class BoardPanel extends JPanel {
         return null;
     }
 
-    final class CenterPanel extends JPanel {
+    static final class CenterPanel extends JPanel {
 
         private final BoardComponent boardComponent = new BoardComponent();
         private final PieceListComponent pieceListComponent = new PieceListComponent();

@@ -30,12 +30,10 @@ public final class MainWindow extends JFrame {
     }
 
     private void initErrorHandler() {
-        viewModel.getError().observe(e -> {
-            JOptionPane.showMessageDialog(this,
-                    e.getMessage(),
-                    "Error occurred",
-                    JOptionPane.ERROR_MESSAGE);
-        });
+        viewModel.getError().observe(e -> JOptionPane.showMessageDialog(this,
+                e.getMessage(),
+                "Error occurred",
+                JOptionPane.ERROR_MESSAGE));
     }
 
     private void initWindow() {
