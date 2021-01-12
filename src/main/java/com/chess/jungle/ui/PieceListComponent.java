@@ -4,19 +4,19 @@ import com.chess.jungle.logic.Coordinate;
 import com.chess.jungle.logic.Piece;
 import com.chess.jungle.viewModel.GameViewModel;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.swing.JComponent;
+import javax.swing.*;
 
 /**
  * @author Chengjie Luo
  */
-public class PieceListComponent extends JComponent {
+public class PieceListComponent extends JLayeredPane {
 
     private final GameViewModel viewModel = GameViewModel.get();
 
@@ -48,11 +48,12 @@ public class PieceListComponent extends JComponent {
                 indicator.addMouseListener(new MouseAdapter() {
 
                     @Override
-                    public void mouseClicked(MouseEvent e) {
+                    public void mouseReleased(MouseEvent e) {
                         viewModel.getCurrentJungleGame().get().movePiece(pieceComponent.getPiece(), coordinate);
                         selectedComponentGroup.clear();
                         repaint();
                         update();
+//                        viewModel.flipCurrentSide();
                     }
                 });
             }
@@ -82,7 +83,7 @@ public class PieceListComponent extends JComponent {
                     pieceComponent.addMouseListener(new MouseAdapter() {
 
                         @Override
-                        public void mouseClicked(MouseEvent e) {
+                        public void mouseReleased(MouseEvent e) {
                             viewModel.setSelectedPiece(pieceComponent);
                         }
                     });
@@ -119,7 +120,7 @@ public class PieceListComponent extends JComponent {
 
         public void addCandidateIndicator(CandidateIndicator indicator) {
             candidateIndicatorList.add(indicator);
-            add(indicator);
+            add(indicator, Integer.valueOf(1));
         }
 
         public void clear() {
