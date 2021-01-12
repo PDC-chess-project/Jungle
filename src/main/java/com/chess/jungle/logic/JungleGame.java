@@ -11,7 +11,7 @@ public class JungleGame {
     protected List<Piece> pieceList;
 
     public JungleGame() {
-        board = Board.getInstance();
+        board = new Board();
         pieceList = new ArrayList<>();
 
         resetPieces();
@@ -85,7 +85,7 @@ public class JungleGame {
     }
 
     public void movePiece(Piece piece,int x,int y){
-        
+        piece.setCoordinate(x,y);
     }
 
     /**
@@ -100,12 +100,7 @@ public class JungleGame {
         //the new coordinate if this piece move in this direction
         Coordinate next = new Coordinate(piece.x,piece.y).nextPace(direction);
 
-        if(next.x < 0 || next.x > board.getWidth() - 1){
-            //if out of board width
-            return null;
-        }
-        if(next.y < 0 || next.y > board.getHeight() - 1){
-            //if out of board length
+        if(!board.isInBoard(next)){
             return null;
         }
         if(board.isRiver(next.x, next.y)){
@@ -123,9 +118,12 @@ public class JungleGame {
                 return null;
             }
         }
+        if(board.isDen(next.x, next.y)){
+            if(!isDenAccessible(next.x, next.y, piece.side)) return null;
+        }
 
         Piece target = getPieceByPos(next.x, next.y);
-        if(target != null && !piece.isEdible(target)){
+        if(target != null && !animalAbleToFight(piece,target)){
             //if target exists and this piece cannot defeat it
             return null;
         }
@@ -169,7 +167,7 @@ public class JungleGame {
      * @param x lion's or tiger's x coordinate
      * @param y lion's or tiger's y coordinate
      * @param direction direction
-     * @return if lion or tiger blocked
+     * @return true if lion or tiger blocked, otherwise false
      */
     public boolean hasBlockInRiver(int x,int y,Direction direction){
         Coordinate c = getBoard().getOppositeShore(x,y,direction);
@@ -197,7 +195,68 @@ public class JungleGame {
         }
 
         return false;
+    }
 
+    /**
+     * Determine if den is accessible or not, animal cannot go in
+     * den belong to its side
+     * @param x den's x coordinate
+     * @param y den's y coordinate
+     * @param side animal's side
+     * @return true if den is accessible, otherwise false
+     */
+    public boolean isDenAccessible(int x,int y,Piece.Side side){
+        if(board.isDen(x, y)){
+            //if this block is den
+
+            //if den is belong to its opponent's side, return true
+            if(y < board.getWidth() / 2 && side == Piece.Side.BLUE){
+                return true;
+            }else if(y > board.getWidth() / 2 && side == Piece.Side.RED){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determine if the animal is trapped, only opponent's trap
+     * can trap the animals in this side
+     * @param piece piece
+     * @return true if the animal is trapped, otherwise false
+     */
+    public boolean isPieceTrapped(Piece piece){
+        if(board.isTrap(piece.x, piece.y)){
+            //if piece is in trap
+
+            //determine whether the trap belongs to the side of this piece
+            if(piece.y < board.getWidth() / 2 && piece.side == Piece.Side.BLUE){
+                return true;
+            }else if(piece.y > board.getWidth() / 2 && piece.side == Piece.Side.RED){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determine whether the attacker can attack and defeat the defender.
+     * Logically the defender should be in a position where the attacker
+     * can move within one step, but this method does not make an if judgment for this
+     * @param attacker attacker
+     * @param defender defender
+     * @return true if attacker is able to defeat defender, otherwise false
+     */
+    public boolean animalAbleToFight(Piece attacker,Piece defender){
+        if(board.isRiver(attacker.x,attacker.y) ^ board.isRiver(defender.x,defender.y)){
+            //if one is on land and another is in the river
+            return false;
+        }
+        if(isPieceTrapped(defender)){
+            //if defender is trapped, the attacker can defeat it
+            return true;
+        }
+        return attacker.isBiggerThan(defender);
     }
 
 

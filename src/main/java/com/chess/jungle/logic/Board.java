@@ -13,9 +13,8 @@ public class Board{
 
     SquareType[][] grid = new SquareType[7][];
 
-    private static Board instance;
 
-    private Board() {
+    public Board() {
 
         for (int i = 0; i < grid.length; i++) {
             SquareType[] column = new SquareType[9];
@@ -41,12 +40,7 @@ public class Board{
             }
         }
     }
-    public static synchronized Board getInstance(){
-        if(instance == null){
-            instance = new Board();
-        }
-        return instance;
-    }
+
     public SquareType[][] getGrid(){
         return grid;
     }
@@ -59,15 +53,33 @@ public class Board{
         return getWidth() > 0 ? grid[0].length : 0;
     }
 
+    public boolean isInBoard(Coordinate coordinate){
+        return isInBoard(coordinate.x,coordinate.y);
+    }
 
-    /**
-     * Determine whether it is a river based on coordinates
-     * @param x x
-     * @param y y
-     * @return if is a river block
-     */
+    public boolean isInBoard(int x, int y){
+        if(x < 0 || x > getWidth() - 1){
+            //if out of board width
+            return false;
+        }
+        if(y < 0 || y > getHeight() - 1){
+            //if out of board length
+            return false;
+        }
+        return true;
+    }
+
+
     public boolean isRiver(int x,int y){
         return grid[x][y] == SquareType.RIVER;
+    }
+
+    public boolean isTrap(int x,int y){
+        return grid[x][y] == SquareType.TRAP;
+    }
+
+    public boolean isDen(int x,int y){
+        return grid[x][y] == SquareType.DEN;
     }
 
     /**
@@ -86,6 +98,5 @@ public class Board{
         }else {
             return res;
         }
-
     }
 }
