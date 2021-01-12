@@ -1,16 +1,7 @@
 package com.chess.jungle.logic;
 
-
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.util.Arrays;
 
-
-/**
- *
- * @author CommA
- */
 public class Board{
 
     public enum SquareType {
@@ -70,21 +61,23 @@ public class Board{
 
 
     /**
-     * 根据坐标判断是否河流
-     * @param x x坐标
-     * @param y y坐标
-     * @return 是否河流
+     * Determine whether it is a river based on coordinates
+     * @param x x
+     * @param y y
+     * @return if is a river block
      */
     public boolean isRiver(int x,int y){
         return grid[x][y] == SquareType.RIVER;
     }
 
     /**
-     * 如果棋子靠近河流，获取河对岸的坐标。如果不靠近则返回朝这个方向移动后的坐标
-     * @param x 横坐标
-     * @param y 纵坐标
-     * @param direction 方向
-     * @return 河对岸坐标
+     * If the chess piece is close to the river, get the coordinates
+     * on the other side of the river. If not close, return the coordinates
+     * after moving in this direction
+     * @param x x
+     * @param y y
+     * @param direction direction
+     * @return new coordinate
      */
     public Coordinate getOppositeShore(int x, int y, Direction direction){
         Coordinate res = new Coordinate(x,y).nextPace(direction);

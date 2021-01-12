@@ -26,9 +26,9 @@ public class Coordinate {
     }
 
     /**
-     * 向某一方向移动一格后的坐标
-     * @param direction 方向
-     * @return 新坐标
+     * The coordinates after moving one grid in a certain direction
+     * @param direction direction
+     * @return new coordinate
      */
     public Coordinate nextPace(Direction direction){
         int nextX = x;

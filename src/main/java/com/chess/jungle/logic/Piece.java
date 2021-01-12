@@ -1,9 +1,5 @@
 package com.chess.jungle.logic;
 
-/**
- *
- * @author CommA
- */
 public class Piece {
 
 
@@ -17,15 +13,35 @@ public class Piece {
         LION,
         ELEPHANT
     }
+    public enum Side {
+        BLUE, RED
+    }
 
     protected Type type;
     protected int x;
     protected int y;
+    protected Side side;
 
-    public Piece(Type type, int x, int y) {
+    public Piece(Type type,Side side,Coordinate coordinate){
+        this.type = type;
+        this.side = side;
+        this.x = coordinate.getX();
+        this.y = coordinate.getY();
+    }
+
+    public Piece(Type type, Side side, int x, int y) {
         this.type = type;
         this.x = x;
         this.y = y;
+        this.side = side;
+    }
+
+    public Side getSide() {
+        return side;
+    }
+
+    public void setSide(Side side) {
+        this.side = side;
     }
 
     public Type getType() {
@@ -58,9 +74,10 @@ public class Piece {
     }
 
     /**
-     * 判断这个动物是否比另一个动物大（动物相同时，认为这个动物大）
-     * @param target 另一个动物
-     * @return 是否比另一个动物更大
+     * Judge whether this animal is bigger than another animal
+     * (when the animals are the same, consider this animal to be bigger)
+     * @param target another animal
+     * @return if bigger than target
      */
     public boolean isBiggerThan(Piece target){
         if(this.type == Type.MOUSE && target.type == Type.ELEPHANT){
@@ -73,13 +90,14 @@ public class Piece {
     }
 
     /**
-     * 判断是否可以吃掉对方，这里特殊处理了老鼠
-     * @param target 另一个动物
-     * @return 是否可以吃掉对方
+     * Determine whether the target can be eaten.
+     * Here we deal with the situation where the two sides are on land and in the river.
+     * @param target another animal
+     * @return if can be eaten
      */
     public boolean isEdible(Piece target){
         if(Board.getInstance().isRiver(this.x,this.y) ^ Board.getInstance().isRiver(target.x,target.y)){
-            //如果双方分别在河流中和陆地上
+            //if one is on land and another is in the river
             return false;
         }
         return isBiggerThan(target);

@@ -8,26 +8,13 @@ import java.util.List;
 public class JungleGame {
 
     protected Board board;
-    protected List<Piece> pieceList = new ArrayList<>();
+    protected List<Piece> pieceList;
 
     public JungleGame() {
         board = Board.getInstance();
-        pieceList.add(new Piece(Piece.Type.LION,0,0));
-        pieceList.add(new Piece(Piece.Type.TIGER,6,0));
-        pieceList.add(new Piece(Piece.Type.DOG,1,1));
-        pieceList.add(new Piece(Piece.Type.CAT,5,1));
-        pieceList.add(new Piece(Piece.Type.MOUSE,0,2));
-        pieceList.add(new Piece(Piece.Type.LEOPARD,2,2));
-        pieceList.add(new Piece(Piece.Type.WOLF,4,2));
-        pieceList.add(new Piece(Piece.Type.ELEPHANT,6,2));
-        pieceList.add(new Piece(Piece.Type.ELEPHANT,0,6));
-        pieceList.add(new Piece(Piece.Type.WOLF,2,6));
-        pieceList.add(new Piece(Piece.Type.LEOPARD,4,6));
-        pieceList.add(new Piece(Piece.Type.MOUSE,6,6));
-        pieceList.add(new Piece(Piece.Type.CAT,1,7));
-        pieceList.add(new Piece(Piece.Type.DOG,5,7));
-        pieceList.add(new Piece(Piece.Type.TIGER,0,8));
-        pieceList.add(new Piece(Piece.Type.LION,6,8));
+        pieceList = new ArrayList<>();
+
+        resetPieces();
     }
 
     public List<Piece> getPieceList() {
@@ -39,9 +26,44 @@ public class JungleGame {
     }
 
     /**
-     * 当前棋子所有可移动到的坐标
-     * @param piece 棋子
-     * @return 所有可移动到的坐标
+     * Reset Pieces to their original position
+     */
+    public void resetPieces(){
+        pieceList = new ArrayList<>();
+
+        /* Pieces' original coordinates.
+            Its order is consistent with Piece.Type
+         */
+        Coordinate[] c = new Coordinate[]{
+                new Coordinate(6,2),
+                new Coordinate(0,0),
+                new Coordinate(6,0),
+                new Coordinate(2,2),
+                new Coordinate(4,2),
+                new Coordinate(1,1),
+                new Coordinate(5,1),
+                new Coordinate(0,2)
+        };
+
+        //add pieces in red side
+        for(Piece.Type type : Piece.Type.values()){
+            pieceList.add(new Piece(type,Piece.Side.RED,c[type.ordinal()]));
+        }
+        //add pieces in blue side
+        for(Piece.Type type: Piece.Type.values()){
+            pieceList.add(new Piece(
+                    type,
+                    Piece.Side.BLUE,
+                    board.getWidth() - c[type.ordinal()].getX() - 1,
+                    board.getHeight() - c[type.ordinal()].y - 1
+            ));
+        }
+    }
+
+    /**
+     * All the coordinates this piece can be moved to
+     * @param piece piece
+     * @return coordinates
      */
     public Coordinate[] getPossibleMove(Piece piece) {
         ArrayList<Coordinate> res = new ArrayList<>();
@@ -67,57 +89,55 @@ public class JungleGame {
     }
 
     /**
-     * 判断这个棋子是否可以朝一个方向移动
-     * @param piece 棋子
-     * @param direction 方向
-     * @return 是否可以朝这个方向移动，是则返回移动后的坐标，否则返回null
+     * Determine whether this piece can move in one direction
+     * @param piece piece
+     * @param direction direction
+     * @return if this piece can move in this direction, return the new coordinates of
+     *          this piece after moving in this direction, otherwise return null
      */
     private Coordinate isMovable(Piece piece, Direction direction){
-        Board board = Board.getInstance();
+        Board board = getBoard();
+        //the new coordinate if this piece move in this direction
         Coordinate next = new Coordinate(piece.x,piece.y).nextPace(direction);
-        int nextX = next.x;
-        int nextY = next.y;
 
-        if(nextX < 0 || nextX > board.getWidth() - 1){
-            //如果超出宽度
+        if(next.x < 0 || next.x > board.getWidth() - 1){
+            //if out of board width
             return null;
         }
-        if(nextY < 0 || nextY > board.getHeight() - 1){
-            //如果超出长度
+        if(next.y < 0 || next.y > board.getHeight() - 1){
+            //if out of board length
             return null;
         }
-        if(board.isRiver(nextX,nextY)){
-            //如果是河流
+        if(board.isRiver(next.x, next.y)){
+            //if new coordinate is river
             if(piece.type == Piece.Type.LION || piece.type == Piece.Type.TIGER){
-                //如果是狮子或老虎
+                //if is tiger or lion
                 if(hasBlockInRiver(piece.x, piece.y, direction)){
-                    //如果河中间有老鼠阻挡，无法跳跃
+                    //if there is a mouse block in the river, cannot jump over the river
                     return null;
                 }
-                //获取河对岸坐标
-                Coordinate coordinate = board.getOppositeShore(piece.x,piece.y,direction);
-                nextX = coordinate.x;
-                nextY = coordinate.y;
+                //get coordinate of opposite shore
+                next = board.getOppositeShore(piece.x,piece.y,direction);
             }else if(piece.type != Piece.Type.MOUSE){
-                //如果不是老鼠、狮子、老虎
+                //if this piece is not mouse,lion or tiger
                 return null;
             }
         }
 
-        Piece target = getPieceByPos(nextX,nextY);
+        Piece target = getPieceByPos(next.x, next.y);
         if(target != null && !piece.isEdible(target)){
-            //如果对手存在并且无法打败
+            //if target exists and this piece cannot defeat it
             return null;
         }
 
-        return new Coordinate(nextX,nextY);
+        return next;
     }
 
     /**
-     * 根据坐标查找动物
-     * @param x x坐标
-     * @param y y坐标
-     * @return 动物，没有则返回null
+     * find animal by coordinate
+     * @param x x
+     * @param y y
+     * @return piece, if there is no animal in this coordinate, return null
      */
     public Piece getPieceByPos(int x,int y){
         for(Piece p : pieceList){
@@ -129,9 +149,9 @@ public class JungleGame {
     }
 
     /**
-     * 根据动物类型查找动物
-     * @param type 动物类型
-     * @return 动物（数组），没有则返回空数组
+     * find animal(both side) by type
+     * @param type animal type
+     * @return piece(Array)，if not find return empty array
      */
     public Piece[] getPiecesByType(Piece.Type type){
         ArrayList<Piece> res = new ArrayList<>();
@@ -144,11 +164,12 @@ public class JungleGame {
     }
 
     /**
-     * 判断河中间是否老鼠阻挡狮子或老虎的跳跃
-     * @param x 老虎或狮子的x坐标
-     * @param y 老虎或狮子的y坐标
-     * @param direction 方向
-     * @return 是否有老鼠阻挡
+     * Determine if there is a mouse in the middle of the river
+     * blocking a lion or tiger from jumping
+     * @param x lion's or tiger's x coordinate
+     * @param y lion's or tiger's y coordinate
+     * @param direction direction
+     * @return if lion or tiger blocked
      */
     public boolean hasBlockInRiver(int x,int y,Direction direction){
         Coordinate c = getBoard().getOppositeShore(x,y,direction);
@@ -159,14 +180,14 @@ public class JungleGame {
 
         for(Piece mouse : pieces){
             if(direction == Direction.UP || direction == Direction.DOWN){
-                //判断垂直方向
+                //judgment in the vertical direction
                 if(mouse.x == x &&
                         mouse.y > Math.min(y,c.y) &&
                         mouse.y < Math.max(y,c.y)){
                     return true;
                 }
             }else {
-                //判断水平方向
+                //judgment in the horizontal direction
                 if(mouse.y == y &&
                         mouse.x > Math.min(x,c.x) &&
                         mouse.x < Math.max(x,c.x)){
