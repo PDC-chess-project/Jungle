@@ -61,31 +61,30 @@ public class Board{
         return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
     }
 
-    public boolean isRiver(int x,int y){
-        return grid[x][y] == SquareType.RIVER;
+    public boolean isRiver(Coordinate c){
+        return grid[c.x][c.y] == SquareType.RIVER;
     }
 
-    public boolean isTrap(int x,int y){
-        return grid[x][y] == SquareType.TRAP;
+    public boolean isTrap(Coordinate c){
+        return grid[c.x][c.y] == SquareType.TRAP;
     }
 
-    public boolean isDen(int x,int y){
-        return grid[x][y] == SquareType.DEN;
+    public boolean isDen(Coordinate c){
+        return grid[c.x][c.y] == SquareType.DEN;
     }
 
     /**
-     * If the chess piece is close to the river, get the coordinates
+     * If the piece is close to the river, get the coordinates
      * on the other side of the river. If not close, return the coordinates
      * after moving in this direction
-     * @param x x
-     * @param y y
+     * @param c this piece's coordinate
      * @param direction direction
      * @return new coordinate
      */
-    public Coordinate getOppositeShore(int x, int y, Direction direction){
-        Coordinate res = new Coordinate(x,y).nextPace(direction);
-        if(isRiver(res.x,res.y)){
-            return getOppositeShore(res.x,res.y,direction);
+    public Coordinate getOppositeShore(Coordinate c, Direction direction){
+        Coordinate res = c.nextPace(direction);
+        if(isRiver(res)){
+            return getOppositeShore(res,direction);
         }else {
             return res;
         }

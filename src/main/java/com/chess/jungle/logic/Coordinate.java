@@ -57,6 +57,9 @@ public class Coordinate {
     }
 
     public boolean equals(Coordinate c) {
+        if(c == null){
+            return false;
+        }
         return this.x == c.x && this.y == c.y;
     }
 
