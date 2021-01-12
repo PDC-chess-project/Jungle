@@ -47,14 +47,6 @@ public class Piece {
         return y;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     public Side getSide() {
         return side;
     }
@@ -62,11 +54,6 @@ public class Piece {
     public void setCoordinate(Coordinate coordinate) {
         this.x = coordinate.x;
         this.y = coordinate.y;
-    }
-
-    public void setCoordinate(int x,int y){
-        this.x = x;
-        this.y = y;
     }
 
     public Coordinate getCoordinate(){

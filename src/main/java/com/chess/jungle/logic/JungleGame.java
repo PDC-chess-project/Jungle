@@ -84,8 +84,8 @@ public class JungleGame {
         return res.toArray(new Coordinate[0]);
     }
 
-    public void movePiece(Piece piece,int x,int y){
-        piece.setCoordinate(x,y);
+    public void movePiece(Piece piece,Coordinate coordinate){
+        piece.setCoordinate(coordinate);
     }
 
     /**
