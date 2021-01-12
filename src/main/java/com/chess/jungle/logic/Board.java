@@ -58,17 +58,8 @@ public class Board{
     }
 
     public boolean isInBoard(int x, int y){
-        if(x < 0 || x > getWidth() - 1){
-            //if out of board width
-            return false;
-        }
-        if(y < 0 || y > getHeight() - 1){
-            //if out of board length
-            return false;
-        }
-        return true;
+        return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
     }
-
 
     public boolean isRiver(int x,int y){
         return grid[x][y] == SquareType.RIVER;

@@ -2,6 +2,7 @@ package com.chess.jungle.logic;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -84,9 +85,6 @@ public class JungleGame {
         return res.toArray(new Coordinate[0]);
     }
 
-    public void movePiece(Piece piece,Coordinate coordinate){
-        piece.setCoordinate(coordinate);
-    }
 
     /**
      * Determine whether this piece can move in one direction
@@ -122,7 +120,7 @@ public class JungleGame {
             if(!isDenAccessible(next.x, next.y, piece.side)) return null;
         }
 
-        Piece target = getPieceByPos(next.x, next.y);
+        Piece target = findPieceByPos(next);
         if(target != null && !animalAbleToFight(piece,target)){
             //if target exists and this piece cannot defeat it
             return null;
@@ -132,14 +130,33 @@ public class JungleGame {
     }
 
     /**
+     * Move piece, if there is a piece in target coordinate,
+     * that piece will be removed
+     * @param piece piece
+     * @param coordinate target coordinate
+     */
+    public void movePiece(Piece piece,Coordinate coordinate){
+        if(!Arrays.asList(getPossibleMove(piece)).contains(coordinate)){
+            //if the coordinate is invalid
+            return;
+        }
+
+        Piece target = findPieceByPos(coordinate);
+        if(target != null){
+            pieceList.remove(target);
+        }
+        piece.setCoordinate(coordinate);
+    }
+
+
+    /**
      * find animal by coordinate
-     * @param x x
-     * @param y y
+     * @param c coordinate
      * @return piece, if there is no animal in this coordinate, return null
      */
-    public Piece getPieceByPos(int x,int y){
+    public Piece findPieceByPos(Coordinate c){
         for(Piece p : pieceList){
-            if(p.getX() == x && p.getY() == y){
+            if(p.getX() == c.x && p.getY() == c.y){
                 return p;
             }
         }
@@ -151,7 +168,7 @@ public class JungleGame {
      * @param type animal type
      * @return piece(Array)，if not find return empty array
      */
-    public Piece[] getPiecesByType(Piece.Type type){
+    public Piece[] findPiecesByType(Piece.Type type){
         ArrayList<Piece> res = new ArrayList<>();
         for(Piece p : pieceList){
             if(p.type == type){
@@ -171,7 +188,7 @@ public class JungleGame {
      */
     public boolean hasBlockInRiver(int x,int y,Direction direction){
         Coordinate c = getBoard().getOppositeShore(x,y,direction);
-        Piece[] pieces = getPiecesByType(Piece.Type.MOUSE);
+        Piece[] pieces = findPiecesByType(Piece.Type.MOUSE);
         if(pieces.length == 0){
             return false;
         }
@@ -248,6 +265,10 @@ public class JungleGame {
      * @return true if attacker is able to defeat defender, otherwise false
      */
     public boolean animalAbleToFight(Piece attacker,Piece defender){
+        if(attacker.side == defender.side){
+            //if they are in the same side
+            return false;
+        }
         if(board.isRiver(attacker.x,attacker.y) ^ board.isRiver(defender.x,defender.y)){
             //if one is on land and another is in the river
             return false;

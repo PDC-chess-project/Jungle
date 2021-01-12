@@ -1,5 +1,7 @@
 package com.chess.jungle.logic;
 
+import java.util.Objects;
+
 public class Coordinate {
     protected int x;
     protected int y;
@@ -53,4 +55,9 @@ public class Coordinate {
                 ", y=" + y +
                 '}';
     }
+
+    public boolean equals(Coordinate c) {
+        return this.x == c.x && this.y == c.y;
+    }
+
 }
