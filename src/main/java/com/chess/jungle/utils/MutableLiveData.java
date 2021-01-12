@@ -25,6 +25,12 @@ public class MutableLiveData<T> implements LiveData<T> {
         this.observerList.add(observer);
     }
 
+    @Override
+    public void stickyObserve(Observer<T> observer) {
+        observer.onChanged(value);
+        observe(observer);
+    }
+
     public void setValue(T value) {
         this.value = value;
         inform();

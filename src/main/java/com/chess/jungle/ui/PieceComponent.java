@@ -22,7 +22,7 @@ public class PieceComponent extends BaseComponent {
     private final Element backgroundElement = new Element(Color.RED, RADIUS, BoardComponent.SQUARE_PADDING);
     private final Element foregroundImage = new Element(0, IMAGE_PADDING);
 
-    private int shadowPixels = 3;
+    private int shadowPixels = 0;
 
     public PieceComponent(String path) throws IOException {
         foregroundImage.setImage(ImageReader.read(path));

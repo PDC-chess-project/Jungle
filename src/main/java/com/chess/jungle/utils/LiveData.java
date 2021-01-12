@@ -13,4 +13,8 @@ public interface LiveData<T> {
     }
 
     public void observe(Observer<T> observer);
+    
+    public void stickyObserve(Observer<T> observer);
+    
+    public T get();
 }

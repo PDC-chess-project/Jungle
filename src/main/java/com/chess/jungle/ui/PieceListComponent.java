@@ -20,9 +20,8 @@ public class PieceListComponent extends JComponent {
 
     private Collection<Piece> pieceList;
 
-    public PieceListComponent(Dimension parent) {
-        setSize(parent);
-        viewModel.getCurrentJungleGame().observe((game) -> {
+    public PieceListComponent() {
+        viewModel.getCurrentJungleGame().stickyObserve((game) -> {
             if (game == null) {
                 return;
             }
@@ -82,5 +81,10 @@ public class PieceListComponent extends JComponent {
         } catch (IOException | NullPointerException e) {
             viewModel.setError(e);
         }
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return null;
     }
 }

@@ -1,35 +1,42 @@
 package com.chess.jungle.ui;
 
-import com.chess.jungle.viewModel.GameViewModel;
+import com.chess.jungle.ui.layout.AbsoluteLayout;
+import com.chess.jungle.ui.layout.CenterLayout;
 import java.awt.Dimension;
-import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 /**
  *
  * @author Chengjie Luo
  */
-public class BoardPanel extends JLayeredPane {
+public final class BoardPanel extends JPanel {
 
     protected final static int SQUARE_SIZE = 75;
 
-    private final GameViewModel viewModel = GameViewModel.get();
-
-    private final BoardComponent boardComponent;
-    private final PieceListComponent pieceListComponent;
-
-    public BoardPanel(Dimension parent) {
-        boardComponent = new BoardComponent(parent);
-        pieceListComponent = new PieceListComponent(parent);
-        init();
+    public BoardPanel() {
+        setLayout(new CenterLayout());
+        add(new CenterPanel());
     }
 
-    private void init() {
-        setLayout(null);
-        update();
+    @Override
+    public Dimension getPreferredSize() {
+        return null;
     }
 
-    public void update() {
-        add(boardComponent, new Integer(0));
-        add(pieceListComponent, new Integer(1));
+    final class CenterPanel extends JPanel {
+
+        private final BoardComponent boardComponent = new BoardComponent();
+        private final PieceListComponent pieceListComponent = new PieceListComponent();
+
+        public CenterPanel() {
+            setLayout(new AbsoluteLayout());
+            add(pieceListComponent);
+            add(boardComponent);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return boardComponent.getPreferredSize();
+        }
     }
 }
