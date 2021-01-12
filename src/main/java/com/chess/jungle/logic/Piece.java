@@ -2,7 +2,6 @@ package com.chess.jungle.logic;
 
 public class Piece {
 
-
     public enum Type {
         MOUSE,
         CAT,
@@ -36,11 +35,6 @@ public class Piece {
         this.side = side;
     }
 
-    public Side getSide() {
-        return side;
-    }
-
-
     public Type getType() {
         return type;
     }
@@ -61,7 +55,11 @@ public class Piece {
         this.y = y;
     }
 
-    public void setCoordinate(Coordinate coordinate){
+    public Side getSide() {
+        return side;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
         this.x = coordinate.x;
         this.y = coordinate.y;
     }
@@ -81,12 +79,12 @@ public class Piece {
      * @param target another animal
      * @return true if this piece bigger than target, otherwise false
      */
-    public boolean isBiggerThan(Piece target){
-        if(this.type == Type.MOUSE && target.type == Type.ELEPHANT){
+    public boolean isBiggerThan(Piece target) {
+        if (this.type == Type.MOUSE && target.type == Type.ELEPHANT) {
             return true;
         } else if (this.type == Type.ELEPHANT && target.type == Type.MOUSE) {
             return false;
-        }else {
+        } else {
             return this.type.compareTo(target.type) >= 0;
         }
     }
@@ -94,10 +92,10 @@ public class Piece {
 
     @Override
     public String toString() {
-        return "Piece{" +
-                "type=" + type +
-                ", x=" + x +
-                ", y=" + y +
-                '}';
+        return "Piece{"
+                + "type=" + type
+                + ", x=" + x
+                + ", y=" + y
+                + '}';
     }
 }

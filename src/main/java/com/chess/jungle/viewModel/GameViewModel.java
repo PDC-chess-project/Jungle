@@ -2,7 +2,9 @@ package com.chess.jungle.viewModel;
 
 import com.chess.jungle.logic.JungleGame;
 import com.chess.jungle.logic.Piece;
+import com.chess.jungle.ui.PieceComponent;
 import com.chess.jungle.utils.LiveData;
+import com.chess.jungle.utils.MutableLiveData;
 
 /**
  *
@@ -22,10 +24,11 @@ public class GameViewModel {
         return instance;
     }
 
-    protected LiveData<Exception> error = new LiveData<>();
+    protected MutableLiveData<Exception> error = new MutableLiveData<>();
 
-    protected LiveData<JungleGame> currentGame = new LiveData<>();
-    protected LiveData<Piece> selectedPiece = new LiveData<>();
+    protected MutableLiveData<JungleGame> currentGame = new MutableLiveData<>();
+    protected MutableLiveData<Piece.Side> currentSide = new MutableLiveData<>(Piece.Side.RED);
+    protected MutableLiveData<PieceComponent> selectedPiece = new MutableLiveData<>();
 
     public LiveData<JungleGame> getCurrentJungleGame() {
         return currentGame;
@@ -35,21 +38,27 @@ public class GameViewModel {
         currentGame.setValue(game);
     }
 
-    public LiveData<Piece> getSelectedPiece() {
+    public LiveData<Piece.Side> getCurrentSide() {
+        return currentSide;
+    }
+
+    public void setCurrentSide(Piece.Side side) {
+        this.currentSide.setValue(side);
+    }
+
+    public LiveData<PieceComponent> getSelectedPiece() {
         return selectedPiece;
     }
 
-    public void setSelectedPiece(Piece piece) {
-        this.selectedPiece.setValue(piece);
-    }
-    
-    public void setError(Exception e) {
-        error.setValue(e);
+    public void setSelectedPiece(PieceComponent pieceComponent) {
+        this.selectedPiece.setValue(pieceComponent);
     }
 
-    public void clear() {
-        currentGame.clear();
-        selectedPiece.clear();
-        error.clear();
+    public LiveData<Exception> getError() {
+        return error;
+    }
+
+    public void setError(Exception e) {
+        error.setValue(e);
     }
 }
