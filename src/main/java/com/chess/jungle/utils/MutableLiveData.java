@@ -37,9 +37,7 @@ public class MutableLiveData<T> implements LiveData<T> {
     }
 
     public void inform() {
-        this.observerList.forEach(observer -> {
-            observer.onChanged(value);
-        });
+        this.observerList.forEach(observer -> observer.onChanged(value));
     }
 
     public T get() {

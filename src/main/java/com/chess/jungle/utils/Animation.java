@@ -3,7 +3,6 @@ package com.chess.jungle.utils;
 import javax.swing.Timer;
 
 /**
- *
  * @author Chengjie Luo
  */
 public class Animation {
@@ -35,15 +34,15 @@ public class Animation {
         }
         currentTime = 0;
         currentValue = isForward ? minValue : maxValue;
-        float acceleration = (maxValue - minValue) / time / time * (isForward ? 1 : -1);
-        float slice = time / 10;
-        new Timer(10, e -> {
+        float acceleration = 2 * (maxValue - minValue) / time / time * (isForward ? 1 : -1);
+        new Timer(18, e -> {
             if (isForward ? currentValue >= maxValue : currentValue <= minValue) {
                 ((Timer) e.getSource()).stop();
                 return;
             }
-            currentTime += slice;
-            currentValue = acceleration * currentTime * currentTime + minValue;
+            currentTime += 18f;
+            if (currentTime > time) currentTime = time;
+            currentValue = 1 / 2f * acceleration * currentTime * currentTime + (isForward ? minValue : maxValue);
             callback.run(currentValue, this);
         }).start();
     }

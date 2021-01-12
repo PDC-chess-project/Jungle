@@ -7,14 +7,14 @@ package com.chess.jungle.utils;
  */
 public interface LiveData<T> {
 
-    public interface Observer<T> {
+     interface Observer<T> {
 
         void onChanged(T value);
     }
 
-    public void observe(Observer<T> observer);
+     void observe(Observer<T> observer);
     
-    public void stickyObserve(Observer<T> observer);
+     void stickyObserve(Observer<T> observer);
     
-    public T get();
+     T get();
 }

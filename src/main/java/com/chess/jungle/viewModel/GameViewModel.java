@@ -7,7 +7,6 @@ import com.chess.jungle.utils.LiveData;
 import com.chess.jungle.utils.MutableLiveData;
 
 /**
- *
  * @author Chengjie Luo
  */
 public class GameViewModel {
@@ -16,11 +15,11 @@ public class GameViewModel {
 
     public static GameViewModel get() {
         if (instance == null)
-        synchronized (GameViewModel.class) {
-            if (instance == null) {
-                instance = new GameViewModel();
+            synchronized (GameViewModel.class) {
+                if (instance == null) {
+                    instance = new GameViewModel();
+                }
             }
-        }
         return instance;
     }
 
@@ -42,8 +41,8 @@ public class GameViewModel {
         return currentSide;
     }
 
-    public void setCurrentSide(Piece.Side side) {
-        this.currentSide.setValue(side);
+    public void flipCurrentSide() {
+        this.currentSide.setValue(currentSide.get() == Piece.Side.RED ? Piece.Side.BLUE : Piece.Side.RED);
     }
 
     public LiveData<PieceComponent> getSelectedPiece() {

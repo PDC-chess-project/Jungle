@@ -9,6 +9,6 @@ import com.chess.jungle.ui.MainWindow;
 public class Game {
 
     public static void main(String[] args) {
-        new MainWindow().show();
+        new MainWindow().setVisible(true);
     }
 }

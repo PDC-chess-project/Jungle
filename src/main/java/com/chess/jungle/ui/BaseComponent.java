@@ -41,8 +41,8 @@ public abstract class BaseComponent extends JComponent {
         
         protected Color color = Color.WHITE;
         protected Image image = null;
-        protected int radius = 0;
-        protected float padding = 0;
+        protected int radius;
+        protected float padding;
         protected int shadow = 0;
         protected Border border = null;
         
@@ -55,14 +55,11 @@ public abstract class BaseComponent extends JComponent {
             this.radius = radius;
             this.padding = padding;
         }
-        
-        private int horizontalPadding;
-        private int verticalPadding;
-        
+
         public void draw(Graphics2D g, int x, int y, int width, int height) {
             int realX, realY, realWidth, realHeight;
-            horizontalPadding = (int) (width * padding);
-            verticalPadding = (int) (height * padding);
+            int horizontalPadding = (int) (width * padding);
+            int verticalPadding = (int) (height * padding);
             realX = x + horizontalPadding;
             realY = y + verticalPadding;
             realWidth = width - 2 * horizontalPadding;
