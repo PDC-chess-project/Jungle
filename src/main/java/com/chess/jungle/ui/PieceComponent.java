@@ -17,9 +17,9 @@ public class PieceComponent extends BaseComponent {
     private final static int RADIUS = 10;
     private final static int ANIMATION_TIME = 100;
 
-    private final Animation animation = new Animation(3, 15, this::setShadowPixels);
+    private final Animation animation = new Animation(0, 15, this::setShadowPixels);
 
-    private final Element backgroundElement = new Element(Color.RED, RADIUS, BoardPanel.BoardCompnent.SQUARE_PADDING);
+    private final Element backgroundElement = new Element(Color.RED, RADIUS, BoardComponent.SQUARE_PADDING);
     private final Element foregroundImage = new Element(0, IMAGE_PADDING);
 
     private int shadowPixels = 3;

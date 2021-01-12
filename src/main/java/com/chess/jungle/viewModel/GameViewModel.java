@@ -3,6 +3,7 @@ package com.chess.jungle.viewModel;
 import com.chess.jungle.logic.JungleGame;
 import com.chess.jungle.logic.Piece;
 import com.chess.jungle.utils.LiveData;
+import com.chess.jungle.utils.MutableLiveData;
 
 /**
  *
@@ -22,10 +23,10 @@ public class GameViewModel {
         return instance;
     }
 
-    protected LiveData<Exception> error = new LiveData<>();
+    protected MutableLiveData<Exception> error = new MutableLiveData<>();
 
-    protected LiveData<JungleGame> currentGame = new LiveData<>();
-    protected LiveData<Piece> selectedPiece = new LiveData<>();
+    protected MutableLiveData<JungleGame> currentGame = new MutableLiveData<>();
+    protected MutableLiveData<Piece> selectedPiece = new MutableLiveData<>();
 
     public LiveData<JungleGame> getCurrentJungleGame() {
         return currentGame;
@@ -46,14 +47,8 @@ public class GameViewModel {
     public LiveData<Exception> getError() {
         return error;
     }
-    
+
     public void setError(Exception e) {
         error.setValue(e);
-    }
-
-    public void clear() {
-        currentGame.clear();
-        selectedPiece.clear();
-        error.clear();
     }
 }

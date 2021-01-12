@@ -43,10 +43,7 @@ public class MainWindow extends JFrame {
     }
 
     private void initCanvas() {
-        BoardPanel boardPanel = new BoardPanel();
-        add(boardPanel);
-        viewModel.getCurrentJungleGame().observe(value -> {
-            boardPanel.update();
-        });
+        BoardPanel boardPanel = new BoardPanel(getSize());
+        add(boardPanel, BorderLayout.CENTER);
     }
 }

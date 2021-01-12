@@ -13,6 +13,7 @@ public class Animation {
     protected final Callback callback;
 
     protected float currentValue;
+    protected float currentTime;
 
     public Animation(float minValue, float maxValue, Callback callback) {
         this.minValue = minValue;
@@ -21,13 +22,15 @@ public class Animation {
     }
 
     public void play(boolean isForward, int time) {
-        new Timer(20, e -> {
+        float acceleration = (maxValue - minValue) / time / time;
+        float slice = time / 10;
+        new Timer(10, e -> {
             if (isForward ? currentValue >= maxValue : currentValue <= minValue) {
                 ((Timer) e.getSource()).stop();
                 return;
             }
-            float increment = 12f / (time / 20f);
-            currentValue += increment;
+            currentTime += slice;
+            currentValue = acceleration * currentTime * currentTime + minValue;
             callback.run(currentValue, this);
         }).start();
     }
