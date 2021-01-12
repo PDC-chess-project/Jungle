@@ -10,19 +10,32 @@ public class Animation {
 
     protected float minValue;
     protected float maxValue;
-    protected final Callback callback;
+    protected Callback callback;
 
     protected float currentValue;
     protected float currentTime;
 
-    public Animation(float minValue, float maxValue, Callback callback) {
+    public Animation(float minValue, float maxValue) {
         this.minValue = minValue;
         this.maxValue = maxValue;
+    }
+
+    public Animation(float minValue, float maxValue, Callback callback) {
+        this(minValue, maxValue);
+        this.callback = callback;
+    }
+
+    public void setCallback(Callback callback) {
         this.callback = callback;
     }
 
     public void play(boolean isForward, int time) {
-        float acceleration = (maxValue - minValue) / time / time;
+        if (callback == null) {
+            return;
+        }
+        currentTime = 0;
+        currentValue = isForward ? minValue : maxValue;
+        float acceleration = (maxValue - minValue) / time / time * (isForward ? 1 : -1);
         float slice = time / 10;
         new Timer(10, e -> {
             if (isForward ? currentValue >= maxValue : currentValue <= minValue) {
