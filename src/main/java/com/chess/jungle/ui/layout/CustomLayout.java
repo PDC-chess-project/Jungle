@@ -1,23 +1,27 @@
 package com.chess.jungle.ui.layout;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.LayoutManager;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- *
  * @author Chengjie Luo
  */
-public class CustomLayout implements LayoutManager {
+public class CustomLayout implements LayoutManager2 {
 
     public enum Orientation {
         HORIZONTAL,
         VERTICAL
     }
 
-    Orientation orientation = Orientation.HORIZONTAL;
+    public enum Constraints {
+        ABSOLUTE,
+        ABSOLUTE_CENTER
+    }
+
+    private Orientation orientation = Orientation.HORIZONTAL;
+
+    private final Map<Component, Constraints> constrainedComponentList = new HashMap<>();
 
     public CustomLayout() {
     }
@@ -27,11 +31,36 @@ public class CustomLayout implements LayoutManager {
     }
 
     @Override
+    public void addLayoutComponent(Component comp, Object constraints) {
+        if (constraints != null) constrainedComponentList.put(comp, (Constraints) constraints);
+    }
+
+    @Override
+    public Dimension maximumLayoutSize(Container target) {
+        return target.getSize();
+    }
+
+    @Override
+    public float getLayoutAlignmentX(Container target) {
+        return 0;
+    }
+
+    @Override
+    public float getLayoutAlignmentY(Container target) {
+        return 0;
+    }
+
+    @Override
+    public void invalidateLayout(Container target) {
+    }
+
+    @Override
     public void addLayoutComponent(String name, Component comp) {
     }
 
     @Override
     public void removeLayoutComponent(Component comp) {
+        constrainedComponentList.remove(comp);
     }
 
     @Override
@@ -43,6 +72,7 @@ public class CustomLayout implements LayoutManager {
         int minWidth = 0;
         int minHeight = 0;
         for (Component component : parent.getComponents()) {
+            if (constrainedComponentList.containsKey(component)) continue;
             Dimension d = component.getPreferredSize();
             if (d != null) {
                 if (orientation == Orientation.HORIZONTAL) {
@@ -73,16 +103,19 @@ public class CustomLayout implements LayoutManager {
         Insets insets = parent.getInsets();
         int currentPosition;
 
+        // Calculate remaining space
         int slice;
+        Dimension minDimension = getMinimumSize(parent);
         if (orientation == Orientation.HORIZONTAL) {
             currentPosition = insets.left;
-            slice = parent.getWidth() - getMinimumSize(parent).width;
+            slice = parent.getWidth() - minDimension.width;
         } else {
             currentPosition = insets.top;
-            slice = parent.getHeight() - getMinimumSize(parent).height;
+            slice = parent.getHeight() - minDimension.height;
         }
         int nonFixedComponentsCount = 0;
         for (Component component : parent.getComponents()) {
+            if (constrainedComponentList.containsKey(component)) continue;
             if (component.getPreferredSize() == null) {
                 nonFixedComponentsCount++;
             }
@@ -93,6 +126,10 @@ public class CustomLayout implements LayoutManager {
         }
 
         for (Component component : parent.getComponents()) {
+            if (constrainedComponentList.containsKey(component)) {
+                absoluteLayout(parent, component);
+                continue;
+            }
             int x = insets.left, y = insets.top, width = parent.getWidth(), height = parent.getHeight();
             Dimension d = component.getPreferredSize();
             if (orientation == Orientation.HORIZONTAL) {
@@ -108,4 +145,21 @@ public class CustomLayout implements LayoutManager {
         }
     }
 
+    protected void absoluteLayout(Container parent, Component component) {
+        Insets inserts = parent.getInsets();
+        Dimension parentD = parent.getSize();
+        Dimension d = component.getPreferredSize();
+        if (d == null) {
+            component.setBounds(inserts.left, inserts.top, parentD.width, parentD.height);
+            return;
+        }
+        switch (constrainedComponentList.get(component)) {
+            case ABSOLUTE:
+                component.setBounds(inserts.left, inserts.top, d.width, d.height);
+                break;
+            case ABSOLUTE_CENTER:
+                int x = (parent.getWidth() - d.width) / 2, y = (parent.getHeight() - d.height) / 2;
+                component.setBounds(x, y, d.width, d.height);
+        }
+    }
 }
