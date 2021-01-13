@@ -10,12 +10,15 @@ public class JungleGame {
 
     protected Board board;
     protected List<Piece> pieceList;
-    private Piece.Side winner = null;
+    private Piece.Side winner;
+    private int blueNum,redNum;
 
     public JungleGame() {
         board = new Board();
         pieceList = new ArrayList<>();
-
+        winner = null;
+        blueNum = 8;
+        redNum = 8;
         resetPieces();
     }
 
@@ -163,6 +166,15 @@ public class JungleGame {
         Piece target = findPieceByPos(coordinate);
         if(target != null){
             pieceList.remove(target);
+            if(target.side == Piece.Side.BLUE){
+                if (--blueNum == 0){
+                    winner = Piece.Side.RED;
+                }
+            }else {
+                if(--redNum == 0){
+                    winner = Piece.Side.BLUE;
+                }
+            }
         }
         piece.setCoordinate(coordinate);
         if(board.isDen(coordinate)){
