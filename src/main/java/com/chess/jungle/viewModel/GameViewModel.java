@@ -41,6 +41,10 @@ public class GameViewModel {
 
     public void movePiece(Piece piece, Coordinate coordinate) {
         currentGame.get().movePiece(piece, coordinate);
+        Piece.Side winner = currentGame.get().getWinner();
+        if (winner != null) {
+            winSide.setValue(winner);
+        }
     }
 
     public void setCurrentGame(JungleGame game) {
@@ -65,6 +69,10 @@ public class GameViewModel {
 
     public void setSelectedPiece(PieceComponent pieceComponent) {
         this.selectedPiece.setValue(pieceComponent);
+    }
+
+    public LiveData<Piece.Side> getWinSide() {
+        return winSide;
     }
 
     public LiveData<Exception> getError() {

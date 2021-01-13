@@ -21,9 +21,10 @@ public final class MainWindow extends JFrame {
 
     public MainWindow() {
         startNewGame();
-        initErrorHandler();
+        initErrorObserver();
         initWindow();
         initContent();
+        initWinObserver();
     }
 
     /**
@@ -34,7 +35,7 @@ public final class MainWindow extends JFrame {
         viewModel.setCurrentSide(Piece.Side.RED);
     }
 
-    private void initErrorHandler() {
+    private void initErrorObserver() {
         viewModel.getError().observe(e -> JOptionPane.showMessageDialog(this,
                 e.getMessage(),
                 "Error occurred",
@@ -60,5 +61,12 @@ public final class MainWindow extends JFrame {
         JPanel leaderboard = new JPanel();
         leaderboard.setPreferredSize(new Dimension(200, 0));
         add(leaderboard);
+    }
+
+    private void initWinObserver() {
+        viewModel.getWinSide().observe(winSide -> JOptionPane.showMessageDialog(this,
+                winSide == Piece.Side.BLUE ? "Blue win!" : "Red win!",
+                "Game over",
+                JOptionPane.PLAIN_MESSAGE));
     }
 }
