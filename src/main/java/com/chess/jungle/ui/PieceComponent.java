@@ -11,6 +11,7 @@ import java.io.IOException;
 import static com.chess.jungle.ui.BoardPanel.SQUARE_SIZE;
 
 /**
+ * Represent one single piece.
  * @author Chengjie Luo
  */
 public class PieceComponent extends BaseComponent {
@@ -77,6 +78,9 @@ public class PieceComponent extends BaseComponent {
         setPosition(piece.getX() * SQUARE_SIZE, piece.getY() * SQUARE_SIZE);
     }
 
+    /**
+     * Update the position of the component according to the piece reference.
+     */
     public void updatePosition() {
         int x = getX(), y = getY();
         int xDistance = piece.getX() * SQUARE_SIZE - x;
@@ -96,6 +100,10 @@ public class PieceComponent extends BaseComponent {
         foregroundImage.draw(g, 0, 0, getWidth(), getWidth());
     }
 
+    /**
+     * Elevate the component by changing position and shadow.
+     * @param isElevated whether it should be elevated
+     */
     public void setIsElevated(boolean isElevated) {
         if (this.isElevated != isElevated) {
             this.isElevated = isElevated;
@@ -114,6 +122,10 @@ public class PieceComponent extends BaseComponent {
         repaint();
     }
 
+    /**
+     * Set the state of selected. Take effect Immediately.
+     * @param isSelected whether it is selected
+     */
     public void setIsSelected(boolean isSelected) {
         if (this.isSelected != isSelected) {
             this.isSelected = isSelected;

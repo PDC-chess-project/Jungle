@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * An simplified implementation of a observer pattern
  * @author Chengjie Luo
  */
 public class MutableLiveData<T> implements LiveData<T> {

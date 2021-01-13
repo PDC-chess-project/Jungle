@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Represent all pieces on the board
  * @author Chengjie Luo
  */
 public class PieceListComponent extends JLayeredPane {
@@ -61,6 +62,9 @@ public class PieceListComponent extends JLayeredPane {
         });
     }
 
+    /**
+     * Update the position of pieces.
+     */
     protected void update() {
         if (pieceList == null) {
             return;
@@ -95,6 +99,9 @@ public class PieceListComponent extends JLayeredPane {
         }
     }
 
+    /**
+     * A group of components indict current selected piece and its possible move.
+     */
     private class SelectedIndicatorGroup {
 
         private PieceComponent pieceComponent;

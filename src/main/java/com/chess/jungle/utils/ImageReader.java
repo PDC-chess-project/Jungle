@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * A utility class to read image from specified path.
  * @author Chengjie Luo
  */
 public class ImageReader {

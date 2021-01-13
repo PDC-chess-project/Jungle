@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * A panel to display the jungle chess.
  * @author Chengjie Luo
  */
 public final class BoardPanel extends JPanel {

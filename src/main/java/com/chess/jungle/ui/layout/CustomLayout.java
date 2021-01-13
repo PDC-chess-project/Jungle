@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A layout support both flex layout and absolute layout.
  * @author Chengjie Luo
  */
 public class CustomLayout implements LayoutManager2 {

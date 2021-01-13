@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
- *
+ * A circle to indicate one candidate square
  * @author Chengjie Luo
  */
 public final class CandidateIndicator extends BaseComponent {

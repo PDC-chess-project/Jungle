@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Coordinate multiple animations to avoid conflict.
  * @author Chengjie Luo
  */
 public class SequentialAnimation {
@@ -15,6 +16,7 @@ public class SequentialAnimation {
         boolean isAnyAnimationRunning = false;
         for (Animation animation : animationMap.values()) {
             if (animation.isRunning()) {
+                // The animation will be executed after another running animation.
                 animation.setEndCallback(() -> animationToPlay.play(isForward, time));
                 isAnyAnimationRunning = true;
                 break;

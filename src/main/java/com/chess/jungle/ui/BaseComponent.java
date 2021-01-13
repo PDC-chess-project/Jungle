@@ -10,7 +10,7 @@ import java.awt.geom.RoundRectangle2D;
 import javax.swing.JComponent;
 
 /**
- *
+ * This is the base class for every custom component.
  * @author Chengjie Luo
  */
 public abstract class BaseComponent extends JComponent {

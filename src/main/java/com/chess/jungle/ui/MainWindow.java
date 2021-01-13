@@ -23,9 +23,12 @@ public final class MainWindow extends JFrame {
         startNewGame();
         initErrorHandler();
         initWindow();
-        initCanvas();
+        initContent();
     }
 
+    /**
+     * Start a new game
+     */
     private void startNewGame() {
         viewModel.setCurrentGame(new JungleGame());
         viewModel.setCurrentSide(Piece.Side.RED);
@@ -52,7 +55,7 @@ public final class MainWindow extends JFrame {
         setLayout(new CustomLayout());
     }
 
-    private void initCanvas() {
+    private void initContent() {
         add(new BoardPanel());
         JPanel leaderboard = new JPanel();
         leaderboard.setPreferredSize(new Dimension(200, 0));

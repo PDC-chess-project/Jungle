@@ -3,6 +3,7 @@ package com.chess.jungle.utils;
 import javax.swing.Timer;
 
 /**
+ * An interpolator to execute a uniformly variable motion animation.
  * @author Chengjie Luo
  */
 public class Animation {

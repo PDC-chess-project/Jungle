@@ -13,7 +13,7 @@ import java.awt.Image;
 import java.io.IOException;
 
 /**
- *
+ * Draw a board to screen.
  * @author Chengjie Luo
  */
 class BoardComponent extends BaseComponent {

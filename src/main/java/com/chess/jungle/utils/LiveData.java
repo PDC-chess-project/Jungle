@@ -1,7 +1,7 @@
 package com.chess.jungle.utils;
 
 /**
- *
+ * Represent a data which is being observed.
  * @author Chengjie Luo
  * @param <T> Observed data type
  */
