@@ -4,14 +4,13 @@ import com.chess.jungle.logic.Coordinate;
 import com.chess.jungle.logic.Piece;
 import com.chess.jungle.viewModel.GameViewModel;
 
-import java.awt.*;
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.swing.*;
 
 /**
  * @author Chengjie Luo
@@ -24,7 +23,7 @@ public class PieceListComponent extends JLayeredPane {
 
     private final List<PieceComponent> pieceComponentList = new ArrayList<>();
 
-    private final SelectedComponentGroup selectedComponentGroup = new SelectedComponentGroup();
+    private final SelectedIndicatorGroup selectedIndicatorGroup = new SelectedIndicatorGroup();
 
     public PieceListComponent() {
         viewModel.getCurrentJungleGame().stickyObserve((game) -> {
@@ -32,6 +31,7 @@ public class PieceListComponent extends JLayeredPane {
                 return;
             }
             this.pieceList = game.getPieceList();
+            pieceComponentList.clear();
             update();
         });
         viewModel.getCurrentSide().stickyObserve((side) -> {
@@ -40,17 +40,17 @@ public class PieceListComponent extends JLayeredPane {
             }
         });
         viewModel.getSelectedPiece().observe(pieceComponent -> {
-            selectedComponentGroup.setPieceComponent(pieceComponent);
+            selectedIndicatorGroup.setPieceComponent(pieceComponent);
             Coordinate[] possibleMovesList = viewModel.getCurrentJungleGame().get().getPossibleMove(pieceComponent.getPiece());
             for (Coordinate coordinate : possibleMovesList) {
                 CandidateIndicator indicator = new CandidateIndicator(coordinate.getX(), coordinate.getY());
-                selectedComponentGroup.addCandidateIndicator(indicator);
+                selectedIndicatorGroup.addCandidateIndicator(indicator);
                 indicator.addMouseListener(new MouseAdapter() {
 
                     @Override
                     public void mouseReleased(MouseEvent e) {
-                        viewModel.getCurrentJungleGame().get().movePiece(pieceComponent.getPiece(), coordinate);
-                        selectedComponentGroup.clear();
+                        viewModel.movePiece(pieceComponent.getPiece(), coordinate);
+                        selectedIndicatorGroup.clear();
                         repaint();
                         update();
                         viewModel.flipCurrentSide();
@@ -95,12 +95,7 @@ public class PieceListComponent extends JLayeredPane {
         }
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-        return null;
-    }
-
-    private class SelectedComponentGroup {
+    private class SelectedIndicatorGroup {
 
         private PieceComponent pieceComponent;
         private final List<CandidateIndicator> candidateIndicatorList = new ArrayList<>();

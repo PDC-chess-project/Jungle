@@ -1,8 +1,10 @@
 package com.chess.jungle.ui;
 
 import com.chess.jungle.logic.JungleGame;
+import com.chess.jungle.logic.Piece;
 import com.chess.jungle.ui.layout.CustomLayout;
 import com.chess.jungle.viewModel.GameViewModel;
+
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -11,7 +13,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- *
  * @author Chengjie Luo
  */
 public final class MainWindow extends JFrame {
@@ -27,6 +28,7 @@ public final class MainWindow extends JFrame {
 
     private void startNewGame() {
         viewModel.setCurrentGame(new JungleGame());
+        viewModel.setCurrentSide(Piece.Side.RED);
     }
 
     private void initErrorHandler() {

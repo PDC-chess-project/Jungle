@@ -1,5 +1,6 @@
 package com.chess.jungle.viewModel;
 
+import com.chess.jungle.logic.Coordinate;
 import com.chess.jungle.logic.JungleGame;
 import com.chess.jungle.logic.Piece;
 import com.chess.jungle.ui.PieceComponent;
@@ -12,6 +13,9 @@ import com.chess.jungle.utils.MutableLiveData;
 public class GameViewModel {
 
     private static volatile GameViewModel instance = null;
+
+    private GameViewModel() {
+    }
 
     public static GameViewModel get() {
         if (instance == null)
@@ -29,8 +33,14 @@ public class GameViewModel {
     protected MutableLiveData<Piece.Side> currentSide = new MutableLiveData<>(Piece.Side.RED);
     protected MutableLiveData<PieceComponent> selectedPiece = new MutableLiveData<>();
 
+    protected MutableLiveData<Piece.Side> winSide = new MutableLiveData<>();
+
     public LiveData<JungleGame> getCurrentJungleGame() {
         return currentGame;
+    }
+
+    public void movePiece(Piece piece, Coordinate coordinate) {
+        currentGame.get().movePiece(piece, coordinate);
     }
 
     public void setCurrentGame(JungleGame game) {
@@ -39,6 +49,10 @@ public class GameViewModel {
 
     public LiveData<Piece.Side> getCurrentSide() {
         return currentSide;
+    }
+
+    public void setCurrentSide(Piece.Side currentSide) {
+        this.currentSide.setValue(currentSide);
     }
 
     public void flipCurrentSide() {
