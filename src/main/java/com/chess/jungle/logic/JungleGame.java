@@ -2,6 +2,7 @@ package com.chess.jungle.logic;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,14 +36,14 @@ public class JungleGame {
             Its order is consistent with Piece.Type
          */
         Coordinate[] c = new Coordinate[]{
-                new Coordinate(6,2),
-                new Coordinate(0,0),
-                new Coordinate(6,0),
-                new Coordinate(2,2),
-                new Coordinate(4,2),
-                new Coordinate(1,1),
+                new Coordinate(0,2),
                 new Coordinate(5,1),
-                new Coordinate(0,2)
+                new Coordinate(1,1),
+                new Coordinate(4,2),
+                new Coordinate(2,2),
+                new Coordinate(6,0),
+                new Coordinate(0,0),
+                new Coordinate(6,2),
         };
 
         //add pieces in red side
@@ -84,9 +85,6 @@ public class JungleGame {
         return res.toArray(new Coordinate[0]);
     }
 
-    public void movePiece(Piece piece,Coordinate coordinate){
-        piece.setCoordinate(coordinate);
-    }
 
     /**
      * Determine whether this piece can move in one direction
@@ -98,31 +96,31 @@ public class JungleGame {
     private Coordinate isMovable(Piece piece, Direction direction){
         Board board = getBoard();
         //the new coordinate if this piece move in this direction
-        Coordinate next = new Coordinate(piece.x,piece.y).nextPace(direction);
+        Coordinate next = new Coordinate(piece.getX(),piece.getY()).nextPace(direction);
 
         if(!board.isInBoard(next)){
             return null;
         }
-        if(board.isRiver(next.x, next.y)){
+        if(board.isRiver(next)){
             //if new coordinate is river
             if(piece.type == Piece.Type.LION || piece.type == Piece.Type.TIGER){
                 //if is tiger or lion
-                if(hasBlockInRiver(piece.x, piece.y, direction)){
+                if(hasBlockInRiver(piece.getCoordinate(), direction)){
                     //if there is a mouse block in the river, cannot jump over the river
                     return null;
                 }
                 //get coordinate of opposite shore
-                next = board.getOppositeShore(piece.x,piece.y,direction);
+                next = board.getOppositeShore(piece.getCoordinate(),direction);
             }else if(piece.type != Piece.Type.MOUSE){
                 //if this piece is not mouse,lion or tiger
                 return null;
             }
         }
-        if(board.isDen(next.x, next.y)){
-            if(!isDenAccessible(next.x, next.y, piece.side)) return null;
+        if(board.isDen(next)){
+            if(!isDenAccessible(next, piece.side)) return null;
         }
 
-        Piece target = getPieceByPos(next.x, next.y);
+        Piece target = findPieceByPos(next);
         if(target != null && !animalAbleToFight(piece,target)){
             //if target exists and this piece cannot defeat it
             return null;
@@ -132,14 +130,43 @@ public class JungleGame {
     }
 
     /**
+     * Determine if this move is valid
+     * @param piece moved piece
+     * @param coordinate target coordinate
+     * @return true if valid, otherwise false
+     */
+    private boolean isMoveValid(Piece piece,Coordinate coordinate){
+        for(Coordinate c : getPossibleMove(piece)){
+            if(c.equals(coordinate)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Move piece, if there is a piece in target coordinate,
+     * that piece will be removed
+     * @param piece piece
+     * @param coordinate target coordinate
+     */
+    public void movePiece(Piece piece,Coordinate coordinate){
+        if(!isMoveValid(piece,coordinate)) return;
+
+        Piece target = findPieceByPos(coordinate);
+        if(target != null){
+            pieceList.remove(target);
+        }
+        piece.setCoordinate(coordinate);
+    }
+
+
+    /**
      * find animal by coordinate
-     * @param x x
-     * @param y y
+     * @param c coordinate
      * @return piece, if there is no animal in this coordinate, return null
      */
-    public Piece getPieceByPos(int x,int y){
+    public Piece findPieceByPos(Coordinate c){
         for(Piece p : pieceList){
-            if(p.getX() == x && p.getY() == y){
+            if(p.getCoordinate().equals(c)){
                 return p;
             }
         }
@@ -151,7 +178,7 @@ public class JungleGame {
      * @param type animal type
      * @return piece(Array)，if not find return empty array
      */
-    public Piece[] getPiecesByType(Piece.Type type){
+    public Piece[] findPiecesByType(Piece.Type type){
         ArrayList<Piece> res = new ArrayList<>();
         for(Piece p : pieceList){
             if(p.type == type){
@@ -164,14 +191,13 @@ public class JungleGame {
     /**
      * Determine if there is a mouse in the middle of the river
      * blocking a lion or tiger from jumping
-     * @param x lion's or tiger's x coordinate
-     * @param y lion's or tiger's y coordinate
+     * @param thisC lion or tiger's coordinate
      * @param direction direction
      * @return true if lion or tiger blocked, otherwise false
      */
-    public boolean hasBlockInRiver(int x,int y,Direction direction){
-        Coordinate c = getBoard().getOppositeShore(x,y,direction);
-        Piece[] pieces = getPiecesByType(Piece.Type.MOUSE);
+    public boolean hasBlockInRiver(Coordinate thisC,Direction direction){
+        Coordinate oppoC = getBoard().getOppositeShore(thisC,direction);
+        Piece[] pieces = findPiecesByType(Piece.Type.MOUSE);
         if(pieces.length == 0){
             return false;
         }
@@ -179,16 +205,16 @@ public class JungleGame {
         for(Piece mouse : pieces){
             if(direction == Direction.UP || direction == Direction.DOWN){
                 //judgment in the vertical direction
-                if(mouse.x == x &&
-                        mouse.y > Math.min(y,c.y) &&
-                        mouse.y < Math.max(y,c.y)){
+                if(mouse.getX() == thisC.x &&
+                        mouse.getY() > Math.min(thisC.y, oppoC.y) &&
+                        mouse.getY() < Math.max(thisC.y,oppoC.y)){
                     return true;
                 }
             }else {
                 //judgment in the horizontal direction
-                if(mouse.y == y &&
-                        mouse.x > Math.min(x,c.x) &&
-                        mouse.x < Math.max(x,c.x)){
+                if(mouse.getY() == thisC.y &&
+                        mouse.getX() > Math.min(thisC.x,oppoC.x) &&
+                        mouse.getX() < Math.max(thisC.x,oppoC.x)){
                     return true;
                 }
             }
@@ -200,19 +226,18 @@ public class JungleGame {
     /**
      * Determine if den is accessible or not, animal cannot go in
      * den belong to its side
-     * @param x den's x coordinate
-     * @param y den's y coordinate
+     * @param c den's coordinate
      * @param side animal's side
      * @return true if den is accessible, otherwise false
      */
-    public boolean isDenAccessible(int x,int y,Piece.Side side){
-        if(board.isDen(x, y)){
+    public boolean isDenAccessible(Coordinate c,Piece.Side side){
+        if(board.isDen(c)){
             //if this block is den
 
             //if den is belong to its opponent's side, return true
-            if(y < board.getWidth() / 2 && side == Piece.Side.BLUE){
+            if(c.y < board.getWidth() / 2 && side == Piece.Side.BLUE){
                 return true;
-            }else if(y > board.getWidth() / 2 && side == Piece.Side.RED){
+            }else if(c.y > board.getWidth() / 2 && side == Piece.Side.RED){
                 return true;
             }
         }
@@ -226,13 +251,13 @@ public class JungleGame {
      * @return true if the animal is trapped, otherwise false
      */
     public boolean isPieceTrapped(Piece piece){
-        if(board.isTrap(piece.x, piece.y)){
+        if(board.isTrap(piece.getCoordinate())){
             //if piece is in trap
 
             //determine whether the trap belongs to the side of this piece
-            if(piece.y < board.getWidth() / 2 && piece.side == Piece.Side.BLUE){
+            if(piece.getY() < board.getWidth() / 2 && piece.side == Piece.Side.BLUE){
                 return true;
-            }else if(piece.y > board.getWidth() / 2 && piece.side == Piece.Side.RED){
+            }else if(piece.getY() > board.getWidth() / 2 && piece.side == Piece.Side.RED){
                 return true;
             }
         }
@@ -248,7 +273,11 @@ public class JungleGame {
      * @return true if attacker is able to defeat defender, otherwise false
      */
     public boolean animalAbleToFight(Piece attacker,Piece defender){
-        if(board.isRiver(attacker.x,attacker.y) ^ board.isRiver(defender.x,defender.y)){
+        if(attacker.side == defender.side){
+            //if they are in the same side
+            return false;
+        }
+        if(board.isRiver(attacker.getCoordinate()) ^ board.isRiver(defender.getCoordinate())){
             //if one is on land and another is in the river
             return false;
         }
