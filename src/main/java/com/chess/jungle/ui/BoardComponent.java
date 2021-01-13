@@ -2,10 +2,14 @@ package com.chess.jungle.ui;
 
 import com.chess.jungle.logic.Board;
 import com.chess.jungle.logic.JungleGame;
+
 import static com.chess.jungle.ui.BoardPanel.SQUARE_SIZE;
+
+import com.chess.jungle.utils.Colors;
 import com.chess.jungle.utils.ImageReader;
 import com.chess.jungle.utils.LiveData;
 import com.chess.jungle.viewModel.GameViewModel;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -14,6 +18,7 @@ import java.io.IOException;
 
 /**
  * Draw a board to screen.
+ *
  * @author Chengjie Luo
  */
 class BoardComponent extends BaseComponent {
@@ -43,8 +48,6 @@ class BoardComponent extends BaseComponent {
             return;
         }
 
-        Color lightGreen = new Color(118, 255, 3);
-        Color darkGreen = new Color(100, 221, 23);
         try {
             Element backgroundElement = new Element(SQUARE_RADIUS, SQUARE_PADDING);
             Element foregroundElement = new Element(0, SQUARE_CONTENT_PADDING);
@@ -58,7 +61,7 @@ class BoardComponent extends BaseComponent {
                         backgroundElement.draw(g, i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                     } else {
                         backgroundElement.setImage(null);
-                        backgroundElement.setColor((i + j) % 2 > 0 ? darkGreen : lightGreen);
+                        backgroundElement.setColor((i + j) % 2 > 0 ? Colors.DARK_GREEN : Colors.LIGHT_GREEN);
                         backgroundElement.draw(g, i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                         Image image = null;
                         switch (squareType) {

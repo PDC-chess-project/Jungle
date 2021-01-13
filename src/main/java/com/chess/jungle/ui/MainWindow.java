@@ -3,14 +3,13 @@ package com.chess.jungle.ui;
 import com.chess.jungle.logic.JungleGame;
 import com.chess.jungle.logic.Piece;
 import com.chess.jungle.ui.layout.CustomLayout;
+import com.chess.jungle.utils.Colors;
+import com.chess.jungle.utils.ImageReader;
 import com.chess.jungle.viewModel.GameViewModel;
 
-import java.awt.Dimension;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.*;
+import java.io.IOException;
+import javax.swing.*;
 
 /**
  * @author Chengjie Luo
@@ -50,17 +49,29 @@ public final class MainWindow extends JFrame {
         }
         setTitle("Jungle game");
         setSize(1000, 800);
-        setMinimumSize(new Dimension(800, 720));
+        setMinimumSize(new Dimension(600, 720));
         setLocationByPlatform(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new CustomLayout());
     }
 
     private void initContent() {
-        add(new BoardPanel());
-        JPanel leaderboard = new JPanel();
-        leaderboard.setPreferredSize(new Dimension(200, 0));
-        add(leaderboard);
+        JPanel gameBoard = new BoardPanel();
+        gameBoard.setOpaque(false);
+        gameBoard.setBackground(Colors.TRANSPARENT);
+        add(gameBoard);
+
+//        JPanel leaderboard = new JPanel();
+//        leaderboard.setOpaque(false);
+//        leaderboard.setPreferredSize(new Dimension(200, 0));
+//        leaderboard.setBackground(Colors.TRANSPARENT);
+//        add(leaderboard);
+
+        try {
+            add(new ImageComponent(ImageReader.read("board/background.png"), Colors.LIGHT_YELLOW), CustomLayout.Constraints.ABSOLUTE);
+        } catch (IOException e) {
+            viewModel.setError(e);
+        }
     }
 
     private void initWinObserver() {

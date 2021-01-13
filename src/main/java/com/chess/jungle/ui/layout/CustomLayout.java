@@ -161,6 +161,7 @@ public class CustomLayout implements LayoutManager2 {
             case ABSOLUTE_CENTER:
                 int x = (parent.getWidth() - d.width) / 2, y = (parent.getHeight() - d.height) / 2;
                 component.setBounds(x, y, d.width, d.height);
+                break;
         }
     }
 }
