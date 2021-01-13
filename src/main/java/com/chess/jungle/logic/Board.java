@@ -1,16 +1,7 @@
 package com.chess.jungle.logic;
 
-
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.util.Arrays;
 
-
-/**
- *
- * @author CommA
- */
 public class Board{
 
     public enum SquareType {
@@ -22,9 +13,8 @@ public class Board{
 
     SquareType[][] grid = new SquareType[7][];
 
-    private static Board instance;
 
-    private Board() {
+    public Board() {
 
         for (int i = 0; i < grid.length; i++) {
             SquareType[] column = new SquareType[9];
@@ -50,12 +40,7 @@ public class Board{
             }
         }
     }
-    public static synchronized Board getInstance(){
-        if(instance == null){
-            instance = new Board();
-        }
-        return instance;
-    }
+
     public SquareType[][] getGrid(){
         return grid;
     }
@@ -68,31 +53,40 @@ public class Board{
         return getWidth() > 0 ? grid[0].length : 0;
     }
 
+    public boolean isInBoard(Coordinate coordinate){
+        return isInBoard(coordinate.x,coordinate.y);
+    }
 
-    /**
-     * 根据坐标判断是否河流
-     * @param x x坐标
-     * @param y y坐标
-     * @return 是否河流
-     */
-    public boolean isRiver(int x,int y){
-        return grid[x][y] == SquareType.RIVER;
+    public boolean isInBoard(int x, int y){
+        return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+    }
+
+    public boolean isRiver(Coordinate c){
+        return grid[c.x][c.y] == SquareType.RIVER;
+    }
+
+    public boolean isTrap(Coordinate c){
+        return grid[c.x][c.y] == SquareType.TRAP;
+    }
+
+    public boolean isDen(Coordinate c){
+        return grid[c.x][c.y] == SquareType.DEN;
     }
 
     /**
-     * 如果棋子靠近河流，获取河对岸的坐标。如果不靠近则返回朝这个方向移动后的坐标
-     * @param x 横坐标
-     * @param y 纵坐标
-     * @param direction 方向
-     * @return 河对岸坐标
+     * If the piece is close to the river, get the coordinates
+     * on the other side of the river. If not close, return the coordinates
+     * after moving in this direction
+     * @param c this piece's coordinate
+     * @param direction direction
+     * @return new coordinate
      */
-    public Coordinate getOppositeShore(int x, int y, Direction direction){
-        Coordinate res = new Coordinate(x,y).nextPace(direction);
-        if(isRiver(res.x,res.y)){
-            return getOppositeShore(res.x,res.y,direction);
+    public Coordinate getOppositeShore(Coordinate c, Direction direction){
+        Coordinate res = c.nextPace(direction);
+        if(isRiver(res)){
+            return getOppositeShore(res,direction);
         }else {
             return res;
         }
-
     }
 }

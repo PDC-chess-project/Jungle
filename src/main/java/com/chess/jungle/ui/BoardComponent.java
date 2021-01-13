@@ -1,8 +1,10 @@
 package com.chess.jungle.ui;
 
 import com.chess.jungle.logic.Board;
+import com.chess.jungle.logic.JungleGame;
 import static com.chess.jungle.ui.BoardPanel.SQUARE_SIZE;
 import com.chess.jungle.utils.ImageReader;
+import com.chess.jungle.utils.LiveData;
 import com.chess.jungle.viewModel.GameViewModel;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,7 +13,7 @@ import java.awt.Image;
 import java.io.IOException;
 
 /**
- *
+ * Draw a board to screen.
  * @author Chengjie Luo
  */
 class BoardComponent extends BaseComponent {
@@ -19,13 +21,17 @@ class BoardComponent extends BaseComponent {
     protected static final float SQUARE_PADDING = 1 / 15f;
     private static final int SQUARE_RADIUS = 10;
     private static final float SQUARE_CONTENT_PADDING = 1 / 5f;
-    private Board board;
 
     private final GameViewModel viewModel = GameViewModel.get();
 
-    public BoardComponent(Dimension parent) {
-        setSize(parent);
-        viewModel.getCurrentJungleGame().observe((game) -> {
+    private Board board;
+
+    public BoardComponent() {
+        LiveData<JungleGame> gameLiveData = viewModel.getCurrentJungleGame();
+        if (gameLiveData.get() != null) {
+            this.board = gameLiveData.get().getBoard();
+        }
+        gameLiveData.observe((game) -> {
             this.board = game.getBoard();
             repaint();
         });
@@ -76,7 +82,7 @@ class BoardComponent extends BaseComponent {
     }
 
     @Override
-    public Dimension getSize() {
+    public Dimension getPreferredSize() {
         return new Dimension(board.getWidth() * SQUARE_SIZE, board.getHeight() * SQUARE_SIZE);
     }
 }

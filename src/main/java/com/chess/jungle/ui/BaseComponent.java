@@ -1,5 +1,6 @@
 package com.chess.jungle.ui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -9,11 +10,11 @@ import java.awt.geom.RoundRectangle2D;
 import javax.swing.JComponent;
 
 /**
- *
+ * This is the base class for every custom component.
  * @author Chengjie Luo
  */
 public abstract class BaseComponent extends JComponent {
-
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -22,34 +23,43 @@ public abstract class BaseComponent extends JComponent {
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         paintComponent(g2d);
     }
-
+    
     protected abstract void paintComponent(Graphics2D g);
-
+    
     public static class Element {
-
+        
+        public static class Border {
+            
+            public final Color color;
+            public final float size;
+            
+            public Border(Color color, float size) {
+                this.color = color;
+                this.size = size;
+            }
+        }
+        
         protected Color color = Color.WHITE;
         protected Image image = null;
-        protected int radius = 0;
-        protected float padding = 0;
+        protected int radius;
+        protected float padding;
         protected int shadow = 0;
-
+        protected Border border = null;
+        
         public Element(Color color, int radius, float padding) {
             this(radius, padding);
             this.color = color;
         }
-
+        
         public Element(int radius, float padding) {
             this.radius = radius;
             this.padding = padding;
         }
 
-        private int horizontalPadding;
-        private int verticalPadding;
-
         public void draw(Graphics2D g, int x, int y, int width, int height) {
             int realX, realY, realWidth, realHeight;
-            horizontalPadding = (int) (width * padding);
-            verticalPadding = (int) (height * padding);
+            int horizontalPadding = (int) (width * padding);
+            int verticalPadding = (int) (height * padding);
             realX = x + horizontalPadding;
             realY = y + verticalPadding;
             realWidth = width - 2 * horizontalPadding;
@@ -65,8 +75,13 @@ public abstract class BaseComponent extends JComponent {
             } else {
                 g.fillRoundRect(realX, realY, realWidth, realHeight, radius, radius);
             }
+            if (border != null) {
+                g.setColor(border.color);
+                g.setStroke(new BasicStroke(border.size));
+                g.drawRoundRect(realX, realY, realWidth, realHeight, radius, radius);
+            }
         }
-
+        
         protected void drawShadow(Graphics g, int x, int y, int width, int height) {
             int maxOpacity = 120;
             double total = Math.pow(1.1, shadow) - 1;
@@ -78,25 +93,29 @@ public abstract class BaseComponent extends JComponent {
                 g.fillRect(x, y + height + i, width, 1);
             }
         }
-
+        
         public void setColor(Color color) {
             this.color = color;
         }
-
+        
         public void setImage(Image image) {
             this.image = image;
         }
-
+        
         public void setRadius(int radius) {
             this.radius = radius;
         }
-
+        
         public void setPadding(float padding) {
             this.padding = padding;
         }
-
+        
         public void setShadow(int shadow) {
             this.shadow = shadow;
+        }
+        
+        public void setBorder(Border border) {
+            this.border = border;
         }
     }
 }

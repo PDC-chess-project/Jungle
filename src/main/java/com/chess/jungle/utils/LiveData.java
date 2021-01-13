@@ -1,16 +1,20 @@
 package com.chess.jungle.utils;
 
 /**
- *
+ * Represent a data which is being observed.
  * @author Chengjie Luo
  * @param <T> Observed data type
  */
 public interface LiveData<T> {
 
-    public interface Observer<T> {
+     interface Observer<T> {
 
         void onChanged(T value);
     }
 
-    public void observe(Observer<T> observer);
+     void observe(Observer<T> observer);
+    
+     void stickyObserve(Observer<T> observer);
+    
+     T get();
 }

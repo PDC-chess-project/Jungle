@@ -1,5 +1,7 @@
 package com.chess.jungle.logic;
 
+import java.util.Objects;
+
 public class Coordinate {
     protected int x;
     protected int y;
@@ -26,9 +28,9 @@ public class Coordinate {
     }
 
     /**
-     * 向某一方向移动一格后的坐标
-     * @param direction 方向
-     * @return 新坐标
+     * The coordinates after moving one grid in a certain direction
+     * @param direction direction
+     * @return new coordinate
      */
     public Coordinate nextPace(Direction direction){
         int nextX = x;
@@ -53,4 +55,12 @@ public class Coordinate {
                 ", y=" + y +
                 '}';
     }
+
+    public boolean equals(Coordinate c) {
+        if(c == null){
+            return false;
+        }
+        return this.x == c.x && this.y == c.y;
+    }
+
 }

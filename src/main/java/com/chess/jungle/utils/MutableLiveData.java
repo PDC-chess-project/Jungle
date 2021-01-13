@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * An simplified implementation of a observer pattern
  * @author Chengjie Luo
  */
 public class MutableLiveData<T> implements LiveData<T> {
@@ -25,15 +25,19 @@ public class MutableLiveData<T> implements LiveData<T> {
         this.observerList.add(observer);
     }
 
+    @Override
+    public void stickyObserve(Observer<T> observer) {
+        observer.onChanged(value);
+        observe(observer);
+    }
+
     public void setValue(T value) {
         this.value = value;
         inform();
     }
 
     public void inform() {
-        this.observerList.forEach(observer -> {
-            observer.onChanged(value);
-        });
+        this.observerList.forEach(observer -> observer.onChanged(value));
     }
 
     public T get() {
