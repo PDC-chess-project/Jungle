@@ -17,22 +17,19 @@ public class Piece {
     }
 
     protected Type type;
-    protected int x;
-    protected int y;
     protected Side side;
+    protected Coordinate coordinate;
 
     public Piece(Type type,Side side,Coordinate coordinate){
         this.type = type;
         this.side = side;
-        this.x = coordinate.getX();
-        this.y = coordinate.getY();
+        this.coordinate = coordinate;
     }
 
     public Piece(Type type, Side side, int x, int y) {
         this.type = type;
-        this.x = x;
-        this.y = y;
         this.side = side;
+        this.coordinate = new Coordinate(x,y);
     }
 
     public Type getType() {
@@ -40,11 +37,11 @@ public class Piece {
     }
 
     public int getX() {
-        return x;
+        return coordinate.x;
     }
 
     public int getY() {
-        return y;
+        return coordinate.y;
     }
 
     public Side getSide() {
@@ -52,12 +49,11 @@ public class Piece {
     }
 
     public void setCoordinate(Coordinate coordinate) {
-        this.x = coordinate.x;
-        this.y = coordinate.y;
+        this.coordinate = coordinate;
     }
 
     public Coordinate getCoordinate(){
-        return new Coordinate(x,y);
+        return coordinate;
     }
 
     /**
@@ -79,10 +75,10 @@ public class Piece {
 
     @Override
     public String toString() {
-        return "Piece{"
-                + "type=" + type
-                + ", x=" + x
-                + ", y=" + y
-                + '}';
+        return "Piece{" +
+                "type=" + type +
+                ", side=" + side +
+                ", coordinate=" + coordinate +
+                '}';
     }
 }
