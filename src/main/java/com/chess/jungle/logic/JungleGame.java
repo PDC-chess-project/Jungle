@@ -10,6 +10,7 @@ public class JungleGame {
 
     protected Board board;
     protected List<Piece> pieceList;
+    private Piece.Side winner = null;
 
     public JungleGame() {
         board = new Board();
@@ -24,6 +25,14 @@ public class JungleGame {
 
     public Board getBoard() {
         return board;
+    }
+
+    /**
+     * Get winner
+     * @return null, if don't have winner. Otherwise return winner's side
+     */
+    public Piece.Side getWinner() {
+        return winner;
     }
 
     /**
@@ -156,8 +165,10 @@ public class JungleGame {
             pieceList.remove(target);
         }
         piece.setCoordinate(coordinate);
+        if(board.isDen(coordinate)){
+            winner = piece.side;
+        }
     }
-
 
     /**
      * find animal by coordinate
