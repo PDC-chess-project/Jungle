@@ -172,9 +172,5 @@ public class Database {
             System.err.println("SQLException from deleteRecord: " + ex.getMessage());
         }
     }
-    public static void main(String[] args) throws Exception{
-        Database database1 = Database.getInstance();
-        ResultSet resultSet = database1.getAllData();
-        System.out.println(resultSet);
-    }
+
 }
