@@ -16,25 +16,29 @@ import java.util.concurrent.Executors;
  * @author 10926
  */
 public class Database {
-    private volatile static Database database = new Database();
-    Connection conn = null;
-    Statement statement;
-    DatabaseMetaData metas;
-    ResultSet tables;
-    ExecutorService executorService = Executors.newCachedThreadPool();
-    private Database(){
-        
+
+    private volatile static Database database;
+    private Connection conn = null;
+    private Statement statement;
+    private DatabaseMetaData metas;
+    private ResultSet tables;
+    private ExecutorService executorService = Executors.newCachedThreadPool();
+
+    private Database() {
     }
-    public static Database getInstance(){
-        if(database == null){
-            synchronized(Database.class){
-                if(database == null){
+
+    public static Database getInstance() {
+        if (database == null) {
+            synchronized (Database.class) {
+                if (database == null) {
+                    database = new Database();
                     database.connectToDatabase();
                 }
             }
         }
         return database;
     }
+
     public boolean connectToDatabase() {
 
         try {
@@ -54,8 +58,9 @@ public class Database {
             return false;
         }
     }
-    public void getRankingList(MutableLiveData mutableLiveData){
-        executorService.submit(()->{
+
+    public void getRankingList(MutableLiveData mutableLiveData) {
+        executorService.submit(() -> {
             System.out.println("正在执行");
             try {
                 mutableLiveData.setValue(database.getAllData());
@@ -64,6 +69,7 @@ public class Database {
             System.out.println("执行完成");
         });
     }
+
     public void createRANKINGLISTTable() {
         try {
             statement.execute("CREATE TABLE RANKINGLIST (PLAYERNAME VARCHAR(15), WIN INT, LOSS INT)");
@@ -71,7 +77,8 @@ public class Database {
             System.err.println("SQLException from createPlayerTable: " + e.getMessage());
         }
     }
-    public ResultSet getAllData() {
+
+    private ResultSet getAllData() {
         ResultSet rs = null;
         try {
 
@@ -84,6 +91,7 @@ public class Database {
 
         return (rs);
     }
+
     public boolean checkPlayerRecord(String name) {
 
         boolean RankingHasRecord = false;
@@ -104,6 +112,7 @@ public class Database {
         }
         return RankingHasRecord;
     }
+
     public void createPlayerRecord(String name) {
 
         try {
@@ -113,6 +122,7 @@ public class Database {
             System.err.println("SQLException from createPlayerRecord: " + ex.getMessage());
         }
     }
+
     public ResultSet getPlayerRecord(String name) {
 
         ResultSet playerRecord = null;
@@ -127,6 +137,7 @@ public class Database {
 
         return playerRecord;
     }
+
     public void updateRecord(String name, boolean won) {
 
         try {
@@ -150,6 +161,7 @@ public class Database {
             System.err.println("SQLException from getPlayerRecord: " + ex.getMessage());
         }
     }
+
     public void deleteRecord(String name) {
 
         try {
@@ -171,6 +183,11 @@ public class Database {
         } catch (SQLException ex) {
             System.err.println("SQLException from deleteRecord: " + ex.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        Database database1 = database.getInstance();
+
     }
 
 }
