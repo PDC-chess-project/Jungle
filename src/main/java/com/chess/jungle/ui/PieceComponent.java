@@ -3,6 +3,7 @@ package com.chess.jungle.ui;
 import com.chess.jungle.logic.Piece;
 import com.chess.jungle.utils.Animation;
 import com.chess.jungle.utils.ImageReader;
+import com.chess.jungle.utils.SequentialAnimation;
 
 import java.awt.*;
 import java.io.IOException;
@@ -20,8 +21,14 @@ public class PieceComponent extends BaseComponent {
     protected final static int MAX_SHADOW = 7;
     protected final static int MIN_SHADOW = 0;
 
-    private final Animation animation = new Animation(MIN_SHADOW, MAX_SHADOW, this::setShadowPixels);
+    private final Animation shadowAnimation = new Animation(MIN_SHADOW, MAX_SHADOW, this::setShadowPixels);
     private final Animation moveAnimation = new Animation(0, 1);
+    private final SequentialAnimation sequentialAnimation = new SequentialAnimation();
+
+    {
+        sequentialAnimation.add("Shadow", shadowAnimation);
+        sequentialAnimation.add("Move", moveAnimation);
+    }
 
     private final Piece piece;
 
@@ -76,7 +83,7 @@ public class PieceComponent extends BaseComponent {
         int yDistance = piece.getY() * SQUARE_SIZE - shadowPixels - y;
         if (xDistance == 0 && yDistance == 0) return;
         moveAnimation.setCallback((v, anim) -> setPosition((int) (xDistance * v + x), (int) (yDistance * v + y + shadowPixels)));
-        moveAnimation.play(true, ANIMATION_TIME);
+        sequentialAnimation.play("Move", true, ANIMATION_TIME);
     }
 
     public final void setPosition(int x, int y) {
@@ -92,7 +99,7 @@ public class PieceComponent extends BaseComponent {
     public void setIsElevated(boolean isElevated) {
         if (this.isElevated != isElevated) {
             this.isElevated = isElevated;
-            animation.play(isElevated, ANIMATION_TIME);
+            sequentialAnimation.play("Shadow", isElevated, ANIMATION_TIME);
         }
     }
 

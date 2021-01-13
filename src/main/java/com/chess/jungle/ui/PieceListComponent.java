@@ -53,7 +53,7 @@ public class PieceListComponent extends JLayeredPane {
                         selectedComponentGroup.clear();
                         repaint();
                         update();
-//                        viewModel.flipCurrentSide();
+                        viewModel.flipCurrentSide();
                     }
                 });
             }
@@ -84,7 +84,8 @@ public class PieceListComponent extends JLayeredPane {
 
                         @Override
                         public void mouseReleased(MouseEvent e) {
-                            viewModel.setSelectedPiece(pieceComponent);
+                            if (viewModel.getCurrentSide().get() == pieceComponent.getPiece().getSide())
+                                viewModel.setSelectedPiece(pieceComponent);
                         }
                     });
                 }
