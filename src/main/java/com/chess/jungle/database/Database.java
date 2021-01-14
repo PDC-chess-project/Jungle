@@ -1,13 +1,8 @@
 package com.chess.jungle.database;
 
-import com.chess.jungle.utils.LiveData;
 import com.chess.jungle.utils.MutableLiveData;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,15 +13,17 @@ import java.util.concurrent.Executors;
 public class Database {
 
     private volatile static Database database;
-    private Connection conn = null;
     private Statement statement;
-    private DatabaseMetaData metas;
-    private ResultSet tables;
-    private ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private Database() {
+
     }
 
+    /**
+     *
+     * @return database
+     */
     public static Database getInstance() {
         if (database == null) {
             synchronized (Database.class) {
@@ -39,26 +36,30 @@ public class Database {
         return database;
     }
 
-    public boolean connectToDatabase() {
+    /**
+     * connect to Database
+     */
+    private void connectToDatabase() {
 
         try {
 
-            conn = DriverManager.getConnection("jdbc:derby:Jungle;create=true");
+            Connection conn = DriverManager.getConnection("jdbc:derby:Jungle;create=true");
             statement = conn.createStatement();
 
-            metas = conn.getMetaData();
-            tables = metas.getTables(conn.getCatalog(), null, "RANKINGLIST", null);
+            DatabaseMetaData metas = conn.getMetaData();
+            ResultSet tables = metas.getTables(conn.getCatalog(), null, "RANKINGLIST", null);
             if (!tables.next()) {
-
-                createRANKINGLISTTable();
+                createRankingListTable();
             }
-            return true;
         } catch (SQLException ex) {
             System.err.println("SQLException: " + ex.getMessage());
-            return false;
         }
     }
 
+    /**
+     * set value
+     * @param mutableLiveData mutableLiveData
+     */
     public void getRankingList(MutableLiveData mutableLiveData) {
         executorService.submit(() -> {
             System.out.println("正在执行");
@@ -70,7 +71,10 @@ public class Database {
         });
     }
 
-    public void createRANKINGLISTTable() {
+    /**
+     *  create table
+     */
+    private void createRankingListTable() {
         try {
             statement.execute("CREATE TABLE RANKINGLIST (PLAYERNAME VARCHAR(15), WIN INT, LOSS INT)");
         } catch (Exception e) {
@@ -78,6 +82,10 @@ public class Database {
         }
     }
 
+    /**
+     * Get all data from RANKINGLIST
+     * @return ResultSet rs
+     */
     private ResultSet getAllData() {
         ResultSet rs = null;
         try {
@@ -92,6 +100,11 @@ public class Database {
         return (rs);
     }
 
+    /**
+     * Check if the current player name already exists
+     * @param name name
+     * @return RankingHsRecord
+     */
     public boolean checkPlayerRecord(String name) {
 
         boolean RankingHasRecord = false;
@@ -113,6 +126,10 @@ public class Database {
         return RankingHasRecord;
     }
 
+    /**
+     * Insert player information
+     * @param name name
+     */
     public void createPlayerRecord(String name) {
 
         try {
@@ -123,6 +140,11 @@ public class Database {
         }
     }
 
+    /**
+     * get player information
+     * @param name name
+     * @return playerRecord
+     */
     public ResultSet getPlayerRecord(String name) {
 
         ResultSet playerRecord = null;
@@ -138,6 +160,11 @@ public class Database {
         return playerRecord;
     }
 
+    /**
+     * Update the information of existing players
+     * @param name name
+     * @param won won
+     */
     public void updateRecord(String name, boolean won) {
 
         try {
@@ -162,10 +189,13 @@ public class Database {
         }
     }
 
+    /**
+     * Delete a certain player record
+     * @param name name
+     */
     public void deleteRecord(String name) {
 
         try {
-            // Delete a certain player record
             statement.execute("DELETE FROM RANKINGLIST WHERE NAME = '" + name + "'");
         } catch (SQLException ex) {
             System.err.println("SQLException from deleteRecord: " + ex.getMessage());
@@ -185,9 +215,5 @@ public class Database {
         }
     }
 
-    public static void main(String[] args) {
-        Database database1 = database.getInstance();
-
-    }
 
 }
