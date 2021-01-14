@@ -43,7 +43,7 @@ public class Database {
 
         try {
 
-            Connection conn = DriverManager.getConnection("jdbc:derby:Jungle;create=true");
+            Connection conn = DriverManager.getConnection("jdbc:derby:LeaderBoard;create=true");
             statement = conn.createStatement();
 
             DatabaseMetaData metas = conn.getMetaData();
@@ -103,7 +103,7 @@ public class Database {
     /**
      * Check if the current player name already exists
      * @param name name
-     * @return RankingHsRecord
+     * @return RankingHasRecord
      */
     public boolean checkPlayerRecord(String name) {
 
@@ -151,7 +151,7 @@ public class Database {
 
         try {
             // Get player record     
-            playerRecord = statement.executeQuery("SELECT NAME, WIN, LOSS FROM LeaderBoard WHERE NAME ='" + name + "'");
+            playerRecord = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
 
         } catch (SQLException ex) {
             System.err.println("SQLException from getPlayerRecord: " + ex.getMessage());
@@ -175,12 +175,12 @@ public class Database {
                 // If player just won a game, update record with +1 wins
                 if (won) {
                     int wins = playerRecord.getInt("WIN");
-                    statement.executeUpdate("UPDATE LeaderBoard SET WIN = " + (++wins) + " WHERE NAME ='" + name + "'");
+                    statement.executeUpdate("UPDATE LeaderBoard SET WIN = " + (++wins) + " WHERE PlayerName ='" + name + "'");
 
                 } // Else if player just lost a game, update record with +1 losses
                 else {
                     int losses = playerRecord.getInt("LOSS");
-                    statement.executeUpdate("UPDATE LeaderBoard SET LOSS = " + (++losses) + " WHERE NAME ='" + name + "'");
+                    statement.executeUpdate("UPDATE LeaderBoard SET LOSS = " + (++losses) + " WHERE PlayerName ='" + name + "'");
 
                 }
             }
