@@ -2,6 +2,9 @@ package com.chess.jungle.logic;
 
 import java.util.Objects;
 
+/**
+ * @author Liangwei Chen
+ */
 public class Coordinate {
     protected int x;
     protected int y;

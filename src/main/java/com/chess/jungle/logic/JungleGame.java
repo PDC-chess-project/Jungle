@@ -2,10 +2,14 @@ package com.chess.jungle.logic;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * This class provides some functions that need to be used when the game is running.
+ * These functions will determine the movement of the pieces, whether the game is over
+ * and other operations according to the rules of the game.
+ * @author Liangwei Chen
+ */
 public class JungleGame {
 
     protected Board board;
