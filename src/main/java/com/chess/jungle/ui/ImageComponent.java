@@ -3,6 +3,8 @@ package com.chess.jungle.ui;
 import java.awt.*;
 
 /**
+ * Draw images with background color to screen. Automatically resize image to fit into component.
+ *
  * @author Chengjie Luo
  */
 public class ImageComponent extends BaseComponent {

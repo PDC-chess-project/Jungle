@@ -12,6 +12,7 @@ import static com.chess.jungle.ui.BoardPanel.SQUARE_SIZE;
 
 /**
  * Represent one single piece.
+ *
  * @author Chengjie Luo
  */
 public class PieceComponent extends BaseComponent {
@@ -102,6 +103,7 @@ public class PieceComponent extends BaseComponent {
 
     /**
      * Elevate the component by changing position and shadow.
+     *
      * @param isElevated whether it should be elevated
      */
     public void setIsElevated(boolean isElevated) {
@@ -124,6 +126,7 @@ public class PieceComponent extends BaseComponent {
 
     /**
      * Set the state of selected. Take effect Immediately.
+     *
      * @param isSelected whether it is selected
      */
     public void setIsSelected(boolean isSelected) {

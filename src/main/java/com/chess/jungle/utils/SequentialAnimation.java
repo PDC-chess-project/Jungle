@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * Coordinate multiple animations to avoid conflict.
+ *
  * @author Chengjie Luo
  */
 public class SequentialAnimation {

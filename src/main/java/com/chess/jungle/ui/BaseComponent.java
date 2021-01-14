@@ -11,10 +11,11 @@ import javax.swing.JComponent;
 
 /**
  * This is the base class for every custom component.
+ *
  * @author Chengjie Luo
  */
 public abstract class BaseComponent extends JComponent {
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -23,34 +24,37 @@ public abstract class BaseComponent extends JComponent {
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         paintComponent(g2d);
     }
-    
+
     protected abstract void paintComponent(Graphics2D g);
-    
+
+    /**
+     * Provide a simple way to draw custom elements.
+     */
     public static class Element {
-        
+
         public static class Border {
-            
+
             public final Color color;
             public final float size;
-            
+
             public Border(Color color, float size) {
                 this.color = color;
                 this.size = size;
             }
         }
-        
+
         protected Color color = Color.WHITE;
         protected Image image = null;
         protected int radius;
         protected float padding;
         protected int shadow = 0;
         protected Border border = null;
-        
+
         public Element(Color color, int radius, float padding) {
             this(radius, padding);
             this.color = color;
         }
-        
+
         public Element(int radius, float padding) {
             this.radius = radius;
             this.padding = padding;
@@ -81,7 +85,7 @@ public abstract class BaseComponent extends JComponent {
                 g.drawRoundRect(realX, realY, realWidth, realHeight, radius, radius);
             }
         }
-        
+
         protected void drawShadow(Graphics g, int x, int y, int width, int height) {
             int maxOpacity = 120;
             double total = Math.pow(1.1, shadow) - 1;
@@ -93,27 +97,27 @@ public abstract class BaseComponent extends JComponent {
                 g.fillRect(x, y + height + i, width, 1);
             }
         }
-        
+
         public void setColor(Color color) {
             this.color = color;
         }
-        
+
         public void setImage(Image image) {
             this.image = image;
         }
-        
+
         public void setRadius(int radius) {
             this.radius = radius;
         }
-        
+
         public void setPadding(float padding) {
             this.padding = padding;
         }
-        
+
         public void setShadow(int shadow) {
             this.shadow = shadow;
         }
-        
+
         public void setBorder(Border border) {
             this.border = border;
         }

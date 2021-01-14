@@ -2,19 +2,16 @@ package com.chess.jungle.ui;
 
 import com.chess.jungle.logic.Board;
 import com.chess.jungle.logic.JungleGame;
-
-import static com.chess.jungle.ui.BoardPanel.SQUARE_SIZE;
-
 import com.chess.jungle.utils.Colors;
 import com.chess.jungle.utils.ImageReader;
 import com.chess.jungle.utils.LiveData;
+import com.chess.jungle.viewModel.ErrorViewModel;
 import com.chess.jungle.viewModel.GameViewModel;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.io.IOException;
+
+import static com.chess.jungle.ui.BoardPanel.SQUARE_SIZE;
 
 /**
  * Draw a board to screen.
@@ -27,16 +24,13 @@ class BoardComponent extends BaseComponent {
     private static final int SQUARE_RADIUS = 10;
     private static final float SQUARE_CONTENT_PADDING = 1 / 5f;
 
-    private final GameViewModel viewModel = GameViewModel.get();
-
     private Board board;
 
     public BoardComponent() {
+        GameViewModel viewModel = GameViewModel.get();
         LiveData<JungleGame> gameLiveData = viewModel.getCurrentJungleGame();
-        if (gameLiveData.get() != null) {
-            this.board = gameLiveData.get().getBoard();
-        }
-        gameLiveData.observe((game) -> {
+        gameLiveData.stickyObserve((game) -> {
+            if (game == null) return;
             this.board = game.getBoard();
             repaint();
         });
@@ -80,12 +74,13 @@ class BoardComponent extends BaseComponent {
                 }
             }
         } catch (IOException e) {
-            viewModel.setError(e);
+            ErrorViewModel.get().setError(e);
         }
     }
 
     @Override
     public Dimension getPreferredSize() {
+        if (board == null) return null;
         return new Dimension(board.getWidth() * SQUARE_SIZE, board.getHeight() * SQUARE_SIZE);
     }
 }

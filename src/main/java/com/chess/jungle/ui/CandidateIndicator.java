@@ -1,11 +1,13 @@
 package com.chess.jungle.ui;
 
 import static com.chess.jungle.ui.BoardPanel.SQUARE_SIZE;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
  * A circle to indicate one candidate square
+ *
  * @author Chengjie Luo
  */
 public final class CandidateIndicator extends BaseComponent {
