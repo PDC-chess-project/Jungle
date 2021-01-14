@@ -47,7 +47,7 @@ public class Database {
             statement = conn.createStatement();
 
             DatabaseMetaData metas = conn.getMetaData();
-            ResultSet tables = metas.getTables(conn.getCatalog(), null, "RANKINGLIST", null);
+            ResultSet tables = metas.getTables(conn.getCatalog(), null, "LeaderBoard", null);
             if (!tables.next()) {
                 createRankingListTable();
             }
@@ -60,7 +60,7 @@ public class Database {
      * set value
      * @param mutableLiveData mutableLiveData
      */
-    public void getRankingList(MutableLiveData mutableLiveData) {
+    public void getLeaderBoard(MutableLiveData mutableLiveData) {
         executorService.submit(() -> {
             System.out.println("正在执行");
             try {
@@ -76,21 +76,21 @@ public class Database {
      */
     private void createRankingListTable() {
         try {
-            statement.execute("CREATE TABLE RANKINGLIST (PLAYERNAME VARCHAR(15), WIN INT, LOSS INT)");
+            statement.execute("CREATE TABLE LeaderBoard (PlayerName VARCHAR(15), WIN INT, LOSS INT)");
         } catch (Exception e) {
             System.err.println("SQLException from createPlayerTable: " + e.getMessage());
         }
     }
 
     /**
-     * Get all data from RANKINGLIST
+     * Get all data from LeaderBoard
      * @return ResultSet rs
      */
     private ResultSet getAllData() {
         ResultSet rs = null;
         try {
 
-            rs = statement.executeQuery("SELECT * FROM RANKINGLIST");
+            rs = statement.executeQuery("SELECT * FROM LeaderBoard");
 
         } catch (Exception e) {
 
@@ -114,7 +114,7 @@ public class Database {
         try {
             while (allData.next()) {
 
-                String recordName = allData.getString("PLAYERNAME");
+                String recordName = allData.getString("PlayerName");
                 if (recordName.equals(name)) {
 
                     RankingHasRecord = true;
@@ -134,7 +134,7 @@ public class Database {
 
         try {
             // Create record with 0 wins and losses
-            statement.execute("INSERT INTO RANKINKList VALUES ('" + name + "', 0, 0)");
+            statement.execute("INSERT INTO LeaderBoard VALUES ('" + name + "', 0, 0)");
         } catch (SQLException ex) {
             System.err.println("SQLException from createPlayerRecord: " + ex.getMessage());
         }
@@ -151,7 +151,7 @@ public class Database {
 
         try {
             // Get player record     
-            playerRecord = statement.executeQuery("SELECT NAME, WIN, LOSS FROM RANKINKLIST WHERE NAME ='" + name + "'");
+            playerRecord = statement.executeQuery("SELECT NAME, WIN, LOSS FROM LeaderBoard WHERE NAME ='" + name + "'");
 
         } catch (SQLException ex) {
             System.err.println("SQLException from getPlayerRecord: " + ex.getMessage());
@@ -175,12 +175,12 @@ public class Database {
                 // If player just won a game, update record with +1 wins
                 if (won) {
                     int wins = playerRecord.getInt("WIN");
-                    statement.executeUpdate("UPDATE RANKINKLIST SET WIN = " + (++wins) + " WHERE NAME ='" + name + "'");
+                    statement.executeUpdate("UPDATE LeaderBoard SET WIN = " + (++wins) + " WHERE NAME ='" + name + "'");
 
                 } // Else if player just lost a game, update record with +1 losses
                 else {
                     int losses = playerRecord.getInt("LOSS");
-                    statement.executeUpdate("UPDATE PLAYER_INFO SET LOSS = " + (++losses) + " WHERE NAME ='" + name + "'");
+                    statement.executeUpdate("UPDATE LeaderBoard SET LOSS = " + (++losses) + " WHERE NAME ='" + name + "'");
 
                 }
             }
@@ -196,7 +196,7 @@ public class Database {
     public void deleteRecord(String name) {
 
         try {
-            statement.execute("DELETE FROM RANKINGLIST WHERE NAME = '" + name + "'");
+            statement.execute("DELETE FROM LeaderBoard WHERE PlayerName = '" + name + "'");
         } catch (SQLException ex) {
             System.err.println("SQLException from deleteRecord: " + ex.getMessage());
         }
@@ -209,7 +209,7 @@ public class Database {
 
         try {
             // Delete a certain player record
-            statement.execute("TRUNCATE TABLE RANKINGLIST");
+            statement.execute("TRUNCATE TABLE LeaderBoard");
         } catch (SQLException ex) {
             System.err.println("SQLException from deleteRecord: " + ex.getMessage());
         }
