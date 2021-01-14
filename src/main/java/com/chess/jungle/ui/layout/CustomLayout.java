@@ -151,21 +151,26 @@ public class CustomLayout implements LayoutManager2 {
         }
     }
 
+    public final static int MATCH_PARENT = -1;
+
     protected void absoluteLayout(Container parent, Component component) {
         Insets inserts = parent.getInsets();
         Dimension parentD = parent.getSize();
         Dimension d = component.getPreferredSize();
+        int width = parentD.width, height = parentD.height;
         if (d == null) {
-            component.setBounds(inserts.left, inserts.top, parentD.width, parentD.height);
+            component.setBounds(inserts.left, inserts.top, width, height);
             return;
         }
+        if (d.width != MATCH_PARENT) width = d.width;
+        if (d.height != MATCH_PARENT) height = d.height;
         switch (constrainedComponentList.get(component)) {
             case ABSOLUTE:
-                component.setBounds(inserts.left, inserts.top, d.width, d.height);
+                component.setBounds(inserts.left, inserts.top, width, height);
                 break;
             case ABSOLUTE_CENTER:
                 int x = (parent.getWidth() - d.width) / 2, y = (parent.getHeight() - d.height) / 2;
-                component.setBounds(x, y, d.width, d.height);
+                component.setBounds(x, y, width, height);
                 break;
         }
     }
