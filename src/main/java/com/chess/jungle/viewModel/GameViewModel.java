@@ -80,6 +80,7 @@ public class GameViewModel {
     }
 
     public void setError(Exception e) {
+        e.printStackTrace();
         error.setValue(e);
     }
 }
