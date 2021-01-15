@@ -1,10 +1,11 @@
 package com.chess.jungle.ui;
 
 import com.chess.jungle.ui.layout.CustomLayout;
-import com.chess.jungle.utils.Colors;
 import com.chess.jungle.utils.ImageReader;
 import com.chess.jungle.viewModel.ErrorViewModel;
 import com.chess.jungle.viewModel.GameViewModel;
+import com.chess.jungle.viewModel.LeaderBoardViewModel;
+import com.chess.jungle.viewModel.SettingsViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,10 +17,14 @@ import java.io.IOException;
  */
 public final class MainWindow extends JFrame {
 
-    private final GameViewModel viewModel = GameViewModel.get();
+    private final GameViewModel gameViewModel = GameViewModel.get();
     private final ErrorViewModel errorViewModel = ErrorViewModel.get();
+    private final LeaderBoardViewModel leaderBoardViewModel = LeaderBoardViewModel.get();
 
+    private final ImageComponent background = new ImageComponent();
     private final WinnerOverlayPanel winnerOverlayPanel = new WinnerOverlayPanel();
+    private final SidebarPanel sidebarPanel = new SidebarPanel();
+    private final SettingsPanel settingsPanel = new SettingsPanel();
 
     public MainWindow() {
         initErrorObserver();
@@ -27,14 +32,13 @@ public final class MainWindow extends JFrame {
         initMenuBar();
         initWindow();
         initContent();
+        initGameObserver();
         initWinnerObserver();
+        initSettingsObserver();
     }
 
-    /**
-     * Start a new game
-     */
     private void startNewGame() {
-        viewModel.startNewGame();
+        gameViewModel.startNewGame();
     }
 
     private void initErrorObserver() {
@@ -51,8 +55,13 @@ public final class MainWindow extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Game");
         gameMenu.add(createJMenuItem("Start new game", this::startNewGame));
+        gameMenu.add(createJMenuItem("Current player", () -> JOptionPane.showMessageDialog(this,
+                "Red:" + leaderBoardViewModel.getRedPlayerName() + "\n" + "Blue:" + leaderBoardViewModel.getBluePlayerName(),
+                "Current player",
+                JOptionPane.INFORMATION_MESSAGE)));
         gameMenu.add(createJMenuItem("Exit", this::dispose));
         JMenu viewMenu = new JMenu("View");
+        viewMenu.add(createJMenuItem("Settings", () -> sidebarPanel.open("Settings", settingsPanel)));
         JMenu helpMenu = new JMenu("help");
         menuBar.add(gameMenu);
         menuBar.add(viewMenu);
@@ -81,7 +90,8 @@ public final class MainWindow extends JFrame {
     private void initContent() {
         // set background
         try {
-            add(new ImageComponent(ImageReader.read("board/background.png"), Colors.LIGHT_YELLOW), CustomLayout.Constraints.ABSOLUTE);
+            background.setImage(ImageReader.read("board/background.png"));
+            add(background, CustomLayout.Constraints.ABSOLUTE);
         } catch (IOException e) {
             errorViewModel.setError(e);
         }
@@ -89,15 +99,46 @@ public final class MainWindow extends JFrame {
         BoardPanel gameBoard = new BoardPanel();
         add(gameBoard);
 
+        add(sidebarPanel, CustomLayout.Constraints.ABSOLUTE);
+
         winnerOverlayPanel.setVisible(false);
         add(winnerOverlayPanel, CustomLayout.Constraints.ABSOLUTE_CENTER);
     }
 
+    /**
+     * Request player name each time game starts.
+     */
+    private void initGameObserver() {
+        gameViewModel.getCurrentJungleGame().stickyObserve(game -> SwingUtilities.invokeLater(() -> {
+            int reply = JOptionPane.NO_OPTION;
+            if (leaderBoardViewModel.validatePlayerName())
+                reply = JOptionPane.showConfirmDialog(this, "Keep the same players?", "Keep players", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.NO_OPTION) {
+                String redPlayerName, bluePlayerName;
+                boolean isFirstRun = true;
+                do {
+                    if (!isFirstRun)
+                        JOptionPane.showMessageDialog(this,
+                                "Please reenter the player names.",
+                                "Your input is invalid",
+                                JOptionPane.ERROR_MESSAGE);
+                    redPlayerName = JOptionPane.showInputDialog(this, "Enter the red player name:", "Red player name", JOptionPane.PLAIN_MESSAGE);
+                    bluePlayerName = JOptionPane.showInputDialog(this, "Enter the blue player name:", "Blue player name", JOptionPane.PLAIN_MESSAGE);
+                    isFirstRun = false;
+                } while (!leaderBoardViewModel.setPlayerNames(redPlayerName, bluePlayerName));
+            }
+        }));
+    }
+
     private void initWinnerObserver() {
-        viewModel.getWinSide().observe(winSide -> {
+        gameViewModel.getWinSide().observe(winSide -> {
             winnerOverlayPanel.setSide(winSide);
             winnerOverlayPanel.setVisible(true);
         });
-        viewModel.getCurrentJungleGame().observe(game -> winnerOverlayPanel.setVisible(false));
+        gameViewModel.getCurrentJungleGame().observe(game -> winnerOverlayPanel.setVisible(false));
+    }
+
+    private void initSettingsObserver() {
+        SettingsViewModel.get().getThemeColor().stickyObserve(background::setColor);
     }
 }

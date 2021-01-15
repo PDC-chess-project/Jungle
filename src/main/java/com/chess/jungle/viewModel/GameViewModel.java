@@ -3,7 +3,6 @@ package com.chess.jungle.viewModel;
 import com.chess.jungle.logic.Coordinate;
 import com.chess.jungle.logic.JungleGame;
 import com.chess.jungle.logic.Piece;
-import com.chess.jungle.ui.PieceComponent;
 import com.chess.jungle.utils.LiveData;
 import com.chess.jungle.utils.MutableLiveData;
 
