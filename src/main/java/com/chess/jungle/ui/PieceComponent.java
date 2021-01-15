@@ -19,7 +19,8 @@ public class PieceComponent extends BaseComponent {
 
     private final static float IMAGE_PADDING = 1 / 5f;
     private final static int RADIUS = 10;
-    private final static int ANIMATION_TIME = 100;
+    private final static int ANIMATION_TIME = 200;
+    private final static int SHADOW_ANIMATION_TIME = 200;
     protected final static int MAX_SHADOW = 7;
     protected final static int MIN_SHADOW = 0;
 
@@ -109,7 +110,7 @@ public class PieceComponent extends BaseComponent {
     public void setIsElevated(boolean isElevated) {
         if (this.isElevated != isElevated) {
             this.isElevated = isElevated;
-            sequentialAnimation.play("Shadow", isElevated, ANIMATION_TIME);
+            sequentialAnimation.play("Shadow", isElevated, SHADOW_ANIMATION_TIME);
         }
     }
 

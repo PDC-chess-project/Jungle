@@ -11,6 +11,8 @@ import java.awt.*;
  */
 public class ImageComponent extends BaseComponent {
 
+    private final static int ANIMATION_TIME = 200;
+
     private Image image;
     private Color color = Color.WHITE;
 
@@ -55,10 +57,10 @@ public class ImageComponent extends BaseComponent {
         int gDiff = color.getGreen() - origin.getGreen();
         int bDiff = color.getBlue() - origin.getBlue();
         colorChangeAnimation.setCallback((value, anime) -> {
-            this.color = new Color((int)(origin.getRed() + rDiff * value), (int)(origin.getGreen() + gDiff * value), (int)(origin.getBlue() + bDiff * value));
+            this.color = new Color((int) (origin.getRed() + rDiff * value), (int) (origin.getGreen() + gDiff * value), (int) (origin.getBlue() + bDiff * value));
             repaint();
         });
-        colorChangeAnimation.play(true, 100);
+        colorChangeAnimation.play(true, ANIMATION_TIME);
     }
 
     @Override

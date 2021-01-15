@@ -9,6 +9,8 @@ import javax.swing.Timer;
  */
 public class Animation {
 
+    private final static int MS_PER_FRAME = 18;
+
     protected float minValue;
     protected float maxValue;
     protected Callback callback;
@@ -54,7 +56,7 @@ public class Animation {
         currentTime = 0;
         currentValue = isForward ? minValue : maxValue;
         float acceleration = 2 * (maxValue - minValue) / time / time * (isForward ? 1 : -1);
-        new Timer(18, e -> {
+        new Timer(MS_PER_FRAME, e -> {
             if (isForward ? currentValue >= maxValue : currentValue <= minValue) {
                 ((Timer) e.getSource()).stop();
                 isRunning = false;
@@ -64,7 +66,7 @@ public class Animation {
                 }
                 return;
             }
-            currentTime += 18f;
+            currentTime += MS_PER_FRAME;
             if (currentTime > time) currentTime = time;
             currentValue = 1 / 2f * acceleration * currentTime * currentTime + (isForward ? minValue : maxValue);
             callback.run(currentValue, this);
