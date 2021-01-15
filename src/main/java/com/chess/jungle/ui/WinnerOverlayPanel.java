@@ -45,14 +45,13 @@ public class WinnerOverlayPanel extends CustomPanel {
 
         private final Dimension size = new Dimension(280, 100);
 
-        private final JLabel winSideLabel = createJLabel();
+        private final JLabel winSideLabel = createJLabel("BLUE", Color.BLUE);
 
         CenterPanel() {
             setLayout(null);
             setBackground(Colors.TRANSPARENT);
-            winSideLabel.setText("BLUE");
             add(winSideLabel, 0, 0, Align.LEFT);
-            add(createJLabel("WINS", Color.WHITE), 0, 0, Align.RIGHT);
+            add(createJLabel("WON", Color.WHITE), 0, 0, Align.RIGHT);
             add(new JButton(new AbstractAction("Play again") {
                 @Override
                 public void actionPerformed(ActionEvent e) {

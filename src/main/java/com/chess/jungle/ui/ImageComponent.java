@@ -1,5 +1,7 @@
 package com.chess.jungle.ui;
 
+import com.chess.jungle.utils.Animation;
+
 import java.awt.*;
 
 /**
@@ -9,8 +11,13 @@ import java.awt.*;
  */
 public class ImageComponent extends BaseComponent {
 
-    private final Image image;
-    private final Color color;
+    private Image image;
+    private Color color = Color.WHITE;
+
+    private final Animation colorChangeAnimation = new Animation(0, 1);
+
+    public ImageComponent() {
+    }
 
     public ImageComponent(Image image, Color color) {
         this.image = image;
@@ -21,6 +28,7 @@ public class ImageComponent extends BaseComponent {
     protected void paintComponent(Graphics2D g) {
         g.setColor(color);
         g.fillRect(0, 0, getWidth(), getHeight());
+        if (image == null) return;
         int width, height;
         int imageWidth = image.getWidth(null), imageHeight = image.getHeight(null);
         int comWidth = getWidth(), comHeight = getHeight();
@@ -34,6 +42,23 @@ public class ImageComponent extends BaseComponent {
             height = (int) (width / (float) imageWidth * imageHeight);
         }
         g.drawImage(image, 0, 0, width, height, null);
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+        repaint();
+    }
+
+    public void setColor(Color color) {
+        Color origin = this.color;
+        int rDiff = color.getRed() - origin.getRed();
+        int gDiff = color.getGreen() - origin.getGreen();
+        int bDiff = color.getBlue() - origin.getBlue();
+        colorChangeAnimation.setCallback((value, anime) -> {
+            this.color = new Color((int)(origin.getRed() + rDiff * value), (int)(origin.getGreen() + gDiff * value), (int)(origin.getBlue() + bDiff * value));
+            repaint();
+        });
+        colorChangeAnimation.play(true, 100);
     }
 
     @Override

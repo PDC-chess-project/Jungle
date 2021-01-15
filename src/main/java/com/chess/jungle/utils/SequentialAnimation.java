@@ -17,8 +17,8 @@ public class SequentialAnimation {
         boolean isAnyAnimationRunning = false;
         for (Animation animation : animationMap.values()) {
             if (animation.isRunning()) {
-                // Check if the animation is already playing
-                if (animation == animationToPlay) return;
+                // Check if the animation is playing
+                if (animation == animationToPlay && animation.isForward() == isForward) return;
                 // The animation will be executed after another running animation.
                 animation.setEndCallback(() -> animationToPlay.play(isForward, time));
                 isAnyAnimationRunning = true;
