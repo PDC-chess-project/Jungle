@@ -27,11 +27,8 @@ public class GameViewModel {
         return instance;
     }
 
-    protected MutableLiveData<Exception> error = new MutableLiveData<>();
-
     protected MutableLiveData<JungleGame> currentGame = new MutableLiveData<>();
     protected MutableLiveData<Piece.Side> currentSide = new MutableLiveData<>(Piece.Side.RED);
-    protected MutableLiveData<PieceComponent> selectedPiece = new MutableLiveData<>();
 
     protected MutableLiveData<Piece.Side> winSide = new MutableLiveData<>();
 
@@ -47,40 +44,20 @@ public class GameViewModel {
         }
     }
 
-    public void setCurrentGame(JungleGame game) {
-        currentGame.setValue(game);
+    public void startNewGame() {
+        currentGame.setValue(new JungleGame());
+        currentSide.setValue(Piece.Side.RED);
     }
 
     public LiveData<Piece.Side> getCurrentSide() {
         return currentSide;
     }
 
-    public void setCurrentSide(Piece.Side currentSide) {
-        this.currentSide.setValue(currentSide);
-    }
-
     public void flipCurrentSide() {
         this.currentSide.setValue(currentSide.get() == Piece.Side.RED ? Piece.Side.BLUE : Piece.Side.RED);
     }
 
-    public LiveData<PieceComponent> getSelectedPiece() {
-        return selectedPiece;
-    }
-
-    public void setSelectedPiece(PieceComponent pieceComponent) {
-        this.selectedPiece.setValue(pieceComponent);
-    }
-
     public LiveData<Piece.Side> getWinSide() {
         return winSide;
-    }
-
-    public LiveData<Exception> getError() {
-        return error;
-    }
-
-    public void setError(Exception e) {
-        e.printStackTrace();
-        error.setValue(e);
     }
 }

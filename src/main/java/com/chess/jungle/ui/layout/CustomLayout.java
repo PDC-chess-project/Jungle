@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * A layout support both flex layout and absolute layout.
+ *
  * @author Chengjie Luo
  */
 public class CustomLayout implements LayoutManager2 {
@@ -102,28 +103,32 @@ public class CustomLayout implements LayoutManager2 {
     @Override
     public void layoutContainer(Container parent) {
         Insets insets = parent.getInsets();
-        int currentPosition;
+        int currentPosition = 0;
 
         // Calculate remaining space
-        int slice;
-        Dimension minDimension = getMinimumSize(parent);
-        if (orientation == Orientation.HORIZONTAL) {
-            currentPosition = insets.left;
-            slice = parent.getWidth() - minDimension.width;
-        } else {
-            currentPosition = insets.top;
-            slice = parent.getHeight() - minDimension.height;
-        }
-        int nonFixedComponentsCount = 0;
-        for (Component component : parent.getComponents()) {
-            if (constrainedComponentList.containsKey(component)) continue;
-            if (component.getPreferredSize() == null) {
-                nonFixedComponentsCount++;
+        int slice = 0;
+        if (parent.getComponentCount() - 1 == constrainedComponentList.size()) {
+            slice = parent.getWidth();
+        } else if (parent.getComponentCount() != constrainedComponentList.size()) {
+            Dimension minDimension = getMinimumSize(parent);
+            if (orientation == Orientation.HORIZONTAL) {
+                currentPosition = insets.left;
+                slice = parent.getWidth() - minDimension.width;
+            } else {
+                currentPosition = insets.top;
+                slice = parent.getHeight() - minDimension.height;
             }
-        }
-        slice /= nonFixedComponentsCount == 0 ? 1 : nonFixedComponentsCount;
-        if (slice < 0) {
-            slice = 0;
+            int nonFixedComponentsCount = 0;
+            for (Component component : parent.getComponents()) {
+                if (constrainedComponentList.containsKey(component)) continue;
+                if (component.getPreferredSize() == null) {
+                    nonFixedComponentsCount++;
+                }
+            }
+            slice /= nonFixedComponentsCount == 0 ? 1 : nonFixedComponentsCount;
+            if (slice < 0) {
+                slice = 0;
+            }
         }
 
         for (Component component : parent.getComponents()) {

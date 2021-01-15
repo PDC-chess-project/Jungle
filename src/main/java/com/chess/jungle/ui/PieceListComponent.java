@@ -2,6 +2,7 @@ package com.chess.jungle.ui;
 
 import com.chess.jungle.logic.Coordinate;
 import com.chess.jungle.logic.Piece;
+import com.chess.jungle.viewModel.ErrorViewModel;
 import com.chess.jungle.viewModel.GameViewModel;
 
 import javax.swing.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 /**
  * Represent all pieces on the board
+ *
  * @author Chengjie Luo
  */
 public class PieceListComponent extends JLayeredPane {
@@ -40,26 +42,6 @@ public class PieceListComponent extends JLayeredPane {
                 pieceComponent.setIsElevated(pieceComponent.getPiece().getSide() == side);
             }
         });
-        viewModel.getSelectedPiece().observe(pieceComponent -> {
-            selectedIndicatorGroup.setPieceComponent(pieceComponent);
-            Coordinate[] possibleMovesList = viewModel.getCurrentJungleGame().get().getPossibleMove(pieceComponent.getPiece());
-            for (Coordinate coordinate : possibleMovesList) {
-                CandidateIndicator indicator = new CandidateIndicator(coordinate.getX(), coordinate.getY());
-                selectedIndicatorGroup.addCandidateIndicator(indicator);
-                indicator.addMouseListener(new MouseAdapter() {
-
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                        viewModel.movePiece(pieceComponent.getPiece(), coordinate);
-                        selectedIndicatorGroup.clear();
-                        repaint();
-                        update();
-                        viewModel.flipCurrentSide();
-                    }
-                });
-            }
-            repaint();
-        });
     }
 
     /**
@@ -80,6 +62,7 @@ public class PieceListComponent extends JLayeredPane {
                     }
                 });
             } else {
+                removeAll();
                 for (Piece piece : pieceList) {
                     PieceComponent pieceComponent = new PieceComponent(piece);
                     pieceComponentList.add(pieceComponent);
@@ -89,14 +72,35 @@ public class PieceListComponent extends JLayeredPane {
                         @Override
                         public void mouseReleased(MouseEvent e) {
                             if (viewModel.getCurrentSide().get() == pieceComponent.getPiece().getSide())
-                                viewModel.setSelectedPiece(pieceComponent);
+                                setSelectedPiece(pieceComponent);
                         }
                     });
                 }
             }
         } catch (IOException | NullPointerException e) {
-            viewModel.setError(e);
+            ErrorViewModel.get().setError(e);
         }
+    }
+
+    protected void setSelectedPiece(PieceComponent pieceComponent) {
+        selectedIndicatorGroup.setPieceComponent(pieceComponent);
+        Coordinate[] possibleMovesList = viewModel.getCurrentJungleGame().get().getPossibleMove(pieceComponent.getPiece());
+        for (Coordinate coordinate : possibleMovesList) {
+            CandidateIndicator indicator = new CandidateIndicator(coordinate.getX(), coordinate.getY());
+            selectedIndicatorGroup.addCandidateIndicator(indicator);
+            indicator.addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    viewModel.movePiece(pieceComponent.getPiece(), coordinate);
+                    selectedIndicatorGroup.clear();
+                    repaint();
+                    update();
+                    viewModel.flipCurrentSide();
+                }
+            });
+        }
+        repaint();
     }
 
     /**

@@ -1,15 +1,15 @@
 package com.chess.jungle.ui;
 
-import com.chess.jungle.logic.JungleGame;
-import com.chess.jungle.logic.Piece;
 import com.chess.jungle.ui.layout.CustomLayout;
 import com.chess.jungle.utils.Colors;
 import com.chess.jungle.utils.ImageReader;
+import com.chess.jungle.viewModel.ErrorViewModel;
 import com.chess.jungle.viewModel.GameViewModel;
 
-import java.awt.*;
-import java.io.IOException;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 /**
  * @author Chengjie Luo
@@ -17,67 +17,87 @@ import javax.swing.*;
 public final class MainWindow extends JFrame {
 
     private final GameViewModel viewModel = GameViewModel.get();
+    private final ErrorViewModel errorViewModel = ErrorViewModel.get();
+
+    private final WinnerOverlayPanel winnerOverlayPanel = new WinnerOverlayPanel();
 
     public MainWindow() {
-        startNewGame();
         initErrorObserver();
+        startNewGame();
+        initMenuBar();
         initWindow();
         initContent();
-        initWinObserver();
+        initWinnerObserver();
     }
 
     /**
      * Start a new game
      */
     private void startNewGame() {
-        viewModel.setCurrentGame(new JungleGame());
-        viewModel.setCurrentSide(Piece.Side.RED);
+        viewModel.startNewGame();
     }
 
     private void initErrorObserver() {
-        viewModel.getError().observe(e -> JOptionPane.showMessageDialog(this,
-                e.getMessage(),
-                "Error occurred",
-                JOptionPane.ERROR_MESSAGE));
+        errorViewModel.getError().observe(e -> {
+            JOptionPane.showMessageDialog(this,
+                    e.getMessage(),
+                    "Error occurred",
+                    JOptionPane.ERROR_MESSAGE);
+            dispose();
+        });
+    }
+
+    private void initMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu gameMenu = new JMenu("Game");
+        gameMenu.add(createJMenuItem("Start new game", this::startNewGame));
+        gameMenu.add(createJMenuItem("Exit", this::dispose));
+        JMenu viewMenu = new JMenu("View");
+        JMenu helpMenu = new JMenu("help");
+        menuBar.add(gameMenu);
+        menuBar.add(viewMenu);
+        menuBar.add(helpMenu);
+        setJMenuBar(menuBar);
+    }
+
+    private JMenuItem createJMenuItem(String name, Runnable callback) {
+        return new JMenuItem(new AbstractAction(name) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                callback.run();
+            }
+        });
     }
 
     private void initWindow() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {
-            viewModel.setError(e);
-        }
         setTitle("Jungle game");
         setSize(1000, 800);
-        setMinimumSize(new Dimension(600, 720));
+        setMinimumSize(new Dimension(560, 750));
         setLocationByPlatform(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new CustomLayout());
+        setContentPane(new CustomPanel());
     }
 
     private void initContent() {
-        JPanel gameBoard = new BoardPanel();
-        gameBoard.setOpaque(false);
-        gameBoard.setBackground(Colors.TRANSPARENT);
-        add(gameBoard);
-
-//        JPanel leaderboard = new JPanel();
-//        leaderboard.setOpaque(false);
-//        leaderboard.setPreferredSize(new Dimension(200, 0));
-//        leaderboard.setBackground(Colors.TRANSPARENT);
-//        add(leaderboard);
-
+        // set background
         try {
             add(new ImageComponent(ImageReader.read("board/background.png"), Colors.LIGHT_YELLOW), CustomLayout.Constraints.ABSOLUTE);
         } catch (IOException e) {
-            viewModel.setError(e);
+            errorViewModel.setError(e);
         }
+
+        BoardPanel gameBoard = new BoardPanel();
+        add(gameBoard);
+
+        winnerOverlayPanel.setVisible(false);
+        add(winnerOverlayPanel, CustomLayout.Constraints.ABSOLUTE_CENTER);
     }
 
-    private void initWinObserver() {
-        viewModel.getWinSide().observe(winSide -> JOptionPane.showMessageDialog(this,
-                winSide == Piece.Side.BLUE ? "Blue win!" : "Red win!",
-                "Game over",
-                JOptionPane.PLAIN_MESSAGE));
+    private void initWinnerObserver() {
+        viewModel.getWinSide().observe(winSide -> {
+            winnerOverlayPanel.setSide(winSide);
+            winnerOverlayPanel.setVisible(true);
+        });
+        viewModel.getCurrentJungleGame().observe(game -> winnerOverlayPanel.setVisible(false));
     }
 }
