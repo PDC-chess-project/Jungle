@@ -3,6 +3,7 @@ package com.chess.jungle.database;
 import com.chess.jungle.utils.MutableLiveData;
 
 import java.sql.*;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,7 +15,7 @@ public class Database {
 
     private volatile static Database database;
     private Statement statement;
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final Executor executorService = Executors.newSingleThreadExecutor();
 
     private Database() {
 
@@ -49,7 +50,7 @@ public class Database {
             DatabaseMetaData metas = conn.getMetaData();
             ResultSet tables = metas.getTables(conn.getCatalog(), null, "LeaderBoard", null);
             if (!tables.next()) {
-                createRankingListTable();
+                createLeaderBoardTable();
             }
         } catch (SQLException ex) {
             System.err.println("SQLException: " + ex.getMessage());
@@ -60,21 +61,16 @@ public class Database {
      * set value
      * @param mutableLiveData mutableLiveData
      */
-    public void getLeaderBoard(MutableLiveData mutableLiveData) {
-        executorService.submit(() -> {
-            System.out.println("正在执行");
-            try {
-                mutableLiveData.setValue(database.getAllData());
-            } catch (Exception e) {
-            }
-            System.out.println("执行完成");
+    public void getLeaderBoard(MutableLiveData<ResultSet> mutableLiveData) {
+        executorService.execute(() -> {
+            mutableLiveData.setValue(database.getLeaderBoard());
         });
     }
 
     /**
      *  create table
      */
-    private void createRankingListTable() {
+    private void createLeaderBoardTable() {
         try {
             statement.execute("CREATE TABLE LeaderBoard (PlayerName VARCHAR(15), WIN INT, LOSS INT)");
         } catch (Exception e) {
@@ -86,7 +82,7 @@ public class Database {
      * Get all data from LeaderBoard
      * @return ResultSet rs
      */
-    private ResultSet getAllData() {
+    private ResultSet getLeaderBoard() {
         ResultSet rs = null;
         try {
 
@@ -94,7 +90,7 @@ public class Database {
 
         } catch (Exception e) {
 
-            System.err.println("SQLException from getAllData: " + e.getMessage());
+            System.err.println("SQLException from getLeaderBoard: " + e.getMessage());
         }
 
         return (rs);
@@ -109,7 +105,7 @@ public class Database {
 
         boolean RankingHasRecord = false;
 
-        ResultSet allData = getAllData();
+        ResultSet allData = getLeaderBoard();
 
         try {
             while (allData.next()) {
