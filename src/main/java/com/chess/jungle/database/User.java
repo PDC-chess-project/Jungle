@@ -1,14 +1,18 @@
 package com.chess.jungle.database;
 
-public class User{
+public class User {
     private String name;
     private int win;
     private int loss;
 
+    public User() {
+    }
+
     /**
      * constructor
+     *
      * @param name name
-     * @param win win
+     * @param win  win
      * @param loss loss
      */
     public User(String name, int win, int loss) {
@@ -19,25 +23,28 @@ public class User{
 
     /**
      * get PlayerName
+     *
      * @return name
      */
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
     /**
      * get win
+     *
      * @return win
      */
-    public int getWin(){
+    public int getWin() {
         return this.win;
     }
 
     /**
      * get loss
+     *
      * @return loss
      */
-    public int getLoss(){
+    public int getLoss() {
         return this.loss;
     }
 
