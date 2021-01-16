@@ -1,5 +1,12 @@
 package com.chess.jungle.viewModel;
 
+import com.chess.jungle.database.Database;
+import com.chess.jungle.database.User;
+import com.chess.jungle.logic.Piece;
+import com.chess.jungle.utils.LiveData;
+
+import java.util.List;
+
 /**
  * @author Chengjie Luo
  */
@@ -23,6 +30,8 @@ public class LeaderBoardViewModel {
 
     protected String redPlayerName;
     protected String bluePlayerName;
+
+    private final Database database = Database.getInstance();
 
     /**
      * Set current player names.
@@ -49,5 +58,25 @@ public class LeaderBoardViewModel {
 
     public String getBluePlayerName() {
         return bluePlayerName;
+    }
+
+    public LiveData<List<User>> getLeaderboard() {
+        return database.getUserList();
+    }
+
+    /**
+     * Record the game result.
+     *
+     * @param winSide The side of player wins.
+     */
+    public void recordResult(Piece.Side winSide) {
+        String winPlayer = winSide == Piece.Side.BLUE ? bluePlayerName : redPlayerName;
+        String losePlayer = winSide == Piece.Side.BLUE ? redPlayerName : bluePlayerName;
+        database.createPlayerRecord(winPlayer, true);
+        database.createPlayerRecord(losePlayer, false);
+    }
+
+    public void clearLeaderboard() {
+        database.deleteAllRecords();
     }
 }

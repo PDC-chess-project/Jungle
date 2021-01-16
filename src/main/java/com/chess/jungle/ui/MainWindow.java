@@ -58,7 +58,8 @@ public final class MainWindow extends JFrame {
         JMenu gameMenu = new JMenu("Game");
         gameMenu.add(createJMenuItem("Start new game", this::startNewGame));
         gameMenu.add(createJMenuItem("Current player", () -> JOptionPane.showMessageDialog(this,
-                "Red:" + leaderBoardViewModel.getRedPlayerName() + "\n" + "Blue:" + leaderBoardViewModel.getBluePlayerName(),
+                "Red: " + leaderBoardViewModel.getRedPlayerName() + "\n"
+                        + "Blue: " + leaderBoardViewModel.getBluePlayerName(),
                 "Current player",
                 JOptionPane.INFORMATION_MESSAGE)));
         gameMenu.add(createJMenuItem("Exit", this::dispose));
@@ -141,6 +142,7 @@ public final class MainWindow extends JFrame {
         gameViewModel.getWinSide().observe(winSide -> {
             winnerOverlayPanel.setSide(winSide);
             winnerOverlayPanel.setVisible(true);
+            leaderBoardViewModel.recordResult(winSide);
         });
         gameViewModel.getCurrentJungleGame().observe(game -> winnerOverlayPanel.setVisible(false));
     }

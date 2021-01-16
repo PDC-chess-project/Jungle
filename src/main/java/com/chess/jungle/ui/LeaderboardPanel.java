@@ -1,14 +1,15 @@
 package com.chess.jungle.ui;
 
+import com.chess.jungle.database.User;
 import com.chess.jungle.ui.layout.CustomLayout;
 import com.chess.jungle.utils.Colors;
 import com.chess.jungle.utils.LiveData;
-import com.chess.jungle.utils.MutableLiveData;
+import com.chess.jungle.viewModel.LeaderBoardViewModel;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
@@ -18,12 +19,18 @@ import java.util.List;
  */
 public class LeaderboardPanel extends JPanel {
 
+    private final LeaderBoardViewModel viewModel = LeaderBoardViewModel.get();
+
     public LeaderboardPanel() {
         setLayout(new CustomLayout(CustomLayout.Orientation.VERTICAL));
         setBackground(Colors.TRANSPARENT);
-        MutableLiveData<List<String>> test = new MutableLiveData<>(new ArrayList<>());
-        add(new LeaderboardTablePanel(test));
-        add(new JButton("Clear record"));
+        add(new LeaderboardTablePanel(viewModel.getLeaderboard()));
+        add(new JButton(new AbstractAction("Clear all record") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewModel.clearLeaderboard();
+            }
+        }));
     }
 
     @Override
@@ -33,7 +40,7 @@ public class LeaderboardPanel extends JPanel {
 
     static class LeaderboardTablePanel extends JScrollPane {
 
-        LeaderboardTablePanel(LiveData<List<String>> liveData) {
+        LeaderboardTablePanel(LiveData<List<User>> liveData) {
             super(new JTable(new TableModel(liveData)));
             JTable table = (JTable) getViewport().getView();
             table.setFillsViewportHeight(true);
@@ -41,17 +48,17 @@ public class LeaderboardPanel extends JPanel {
 
         static class TableModel extends AbstractTableModel {
 
-            private final static String[] columns = new String[]{"Name", "Win", "Lose"};
-            private final LiveData<List<String>> liveData;
+            private final static String[] columns = new String[]{"Name", "Win", "Lost"};
+            private final LiveData<List<User>> liveData;
 
-            TableModel(LiveData<List<String>> liveData) {
+            TableModel(LiveData<List<User>> liveData) {
                 this.liveData = liveData;
                 liveData.observe(v -> fireTableDataChanged());
             }
 
             @Override
             public int getRowCount() {
-                return liveData.get().size();
+                return liveData.get() == null ? 0 : liveData.get().size();
             }
 
             @Override
@@ -66,7 +73,19 @@ public class LeaderboardPanel extends JPanel {
 
             @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
-                return liveData.get().get(rowIndex);
+                if (liveData.get() == null)
+                    return null;
+                User user = liveData.get().get(rowIndex);
+                switch (columnIndex) {
+                    case 0:
+                        return user.getName();
+                    case 1:
+                        return user.getWin();
+                    case 2:
+                        return user.getLoss();
+                    default:
+                        return null;
+                }
             }
         }
 
