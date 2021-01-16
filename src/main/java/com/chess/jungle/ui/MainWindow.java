@@ -25,6 +25,7 @@ public final class MainWindow extends JFrame {
     private final WinnerOverlayPanel winnerOverlayPanel = new WinnerOverlayPanel();
     private final SidebarPanel sidebarPanel = new SidebarPanel();
     private final SettingsPanel settingsPanel = new SettingsPanel();
+    private final LeaderboardPanel leaderboardPanel = new LeaderboardPanel();
 
     public MainWindow() {
         initErrorObserver();
@@ -53,6 +54,7 @@ public final class MainWindow extends JFrame {
 
     private void initMenuBar() {
         JMenuBar menuBar = new JMenuBar();
+
         JMenu gameMenu = new JMenu("Game");
         gameMenu.add(createJMenuItem("Start new game", this::startNewGame));
         gameMenu.add(createJMenuItem("Current player", () -> JOptionPane.showMessageDialog(this,
@@ -60,9 +62,15 @@ public final class MainWindow extends JFrame {
                 "Current player",
                 JOptionPane.INFORMATION_MESSAGE)));
         gameMenu.add(createJMenuItem("Exit", this::dispose));
+
         JMenu viewMenu = new JMenu("View");
         viewMenu.add(createJMenuItem("Settings", () -> sidebarPanel.open("Settings", settingsPanel)));
-        JMenu helpMenu = new JMenu("help");
+        viewMenu.add(createJMenuItem("Leaderboard", () -> sidebarPanel.open("Leaderboard", leaderboardPanel)));
+
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.add(createJMenuItem("Rules", this::openRuleDialog));
+        helpMenu.add(createJMenuItem("About", this::openAboutDialog));
+
         menuBar.add(gameMenu);
         menuBar.add(viewMenu);
         menuBar.add(helpMenu);
@@ -96,8 +104,7 @@ public final class MainWindow extends JFrame {
             errorViewModel.setError(e);
         }
 
-        BoardPanel gameBoard = new BoardPanel();
-        add(gameBoard);
+        add(new BoardPanel());
 
         add(sidebarPanel, CustomLayout.Constraints.ABSOLUTE);
 
@@ -140,5 +147,27 @@ public final class MainWindow extends JFrame {
 
     private void initSettingsObserver() {
         SettingsViewModel.get().getThemeColor().stickyObserve(background::setColor);
+    }
+
+    private void openRuleDialog() {
+        JOptionPane.showMessageDialog(this,
+                "The player who is first to maneuver any one of their pieces into the opponent's den wins the game.\n\n" +
+                        "Ranking: Mouse > Elephant > Lion > Tiger > Leopard > Dog > Wolf > Cat > Mouse.\n" +
+                        "The mouse is the only animal that may go onto a water square.\n" +
+                        "The lion and tiger can jump over a river horizontally or vertically.\n" +
+                        "A piece that enters one of the opponent's trap squares is reduced in rank to 0.",
+                "Basic rules",
+                JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void openAboutDialog() {
+        JOptionPane.showMessageDialog(this,
+                "This is a simple jungle game.\n\n" +
+                        "Developed by\n" +
+                        "Chengjie Luo\n" +
+                        "Liangwei Chen\n" +
+                        "Chenfan Wang",
+                "About",
+                JOptionPane.PLAIN_MESSAGE);
     }
 }
