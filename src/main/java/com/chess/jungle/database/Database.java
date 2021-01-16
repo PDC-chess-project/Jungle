@@ -63,7 +63,6 @@ public class Database {
             ResultSet resultSet = database.getLeaderBoard();
             ArrayList<User> userList = new ArrayList<>();
             try {
-                resultSet.beforeFirst();
                 while (resultSet.next()) {
                     String name = resultSet.getString("PlayerName");
                     int win = resultSet.getInt("WIN");
@@ -71,8 +70,8 @@ public class Database {
                     userList.add(new User(name, win, loss));
                 }
                 mutableLiveData.setValue(userList);
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
