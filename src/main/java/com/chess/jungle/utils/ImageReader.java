@@ -1,11 +1,11 @@
 package com.chess.jungle.utils;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 
 /**
  * A utility class to read image from specified path.
@@ -20,7 +20,9 @@ public class ImageReader {
         if (cache.containsKey(path))
             return cache.get(path);
         else {
-            Image image = ImageIO.read(new File("src/main/java/com/chess/jungle/assets/" + path));
+            URL url = ImageReader.class.getClassLoader().getResource(path);
+            if (url == null) throw new IOException("File does not exist!");
+            Image image = ImageIO.read(url);
             cache.put(path, image);
             return image;
         }
