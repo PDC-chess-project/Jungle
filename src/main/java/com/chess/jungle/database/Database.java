@@ -61,7 +61,7 @@ public class Database {
     public void getLeaderBoard(MutableLiveData<List<User>> mutableLiveData) {
         executorService.execute(() -> {
             ResultSet resultSet = database.getLeaderBoard();
-            ArrayList<User> userList = null;
+            ArrayList<User> userList = new ArrayList<>();
             try {
                 resultSet.beforeFirst();
                 while (resultSet.next()) {
@@ -70,10 +70,10 @@ public class Database {
                     int loss = resultSet.getInt("LOSS");
                     userList.add(new User(name, win, loss));
                 }
-            } catch (SQLException e) {
+                mutableLiveData.setValue(userList);
+            } catch (Exception ignored) {
 
             }
-            mutableLiveData.setValue(userList);
         });
     }
 
@@ -114,15 +114,15 @@ public class Database {
     /**
      * @param name name
      * @return rs.next()
-     * @throws SQLException
      */
-    protected boolean checkPlayerRecord(String name) throws SQLException {
-
-        ResultSet rs = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
-        if(!rs.next()){
+    protected boolean checkPlayerRecord(String name) {
+        try {
+            ResultSet rs = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
+            return rs.next();
+        }catch (SQLException e){
+            e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     /**

@@ -18,13 +18,13 @@ import java.sql.ResultSet;
 public class DatabaseTest { 
 private Database database;
 @Before
-public void before() throws Exception {
+public void before() {
     database = Database.getInstance();
     database.createPlayerRecord("testName",true);
 } 
 
 @After
-public void after() throws Exception {
+public void after() {
     database.deleteAllRecords();
     database = null;
 } 
@@ -46,7 +46,7 @@ public void testGetInstance() throws Exception {
 * 
 */ 
 @Test
-public void testGetLeaderBoard() throws Exception {
+public void testGetLeaderBoard() {
     database.getLeaderBoard(new MutableLiveData<>());
 } 
 
@@ -79,7 +79,7 @@ public void testDeleteAllRecords() throws Exception {
  */
 @Test
 public void checkPlayerRecord() throws Exception {
-    Boolean isTrue = database.checkPlayerRecord("testName");
+    boolean isTrue = database.checkPlayerRecord("testName");
     Assert.assertTrue(isTrue);
 }
 
