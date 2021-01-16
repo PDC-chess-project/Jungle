@@ -4,3 +4,5 @@ src/main/java/test
 
 
 *.iml
+/Jungle/
+*.log
