@@ -19,6 +19,7 @@ public class DatabaseTest {
     public void before() {
         database = new Database();
         database.connectToDatabaseSync();
+        database.deleteAllRecordsSync();
         database.createPlayerRecordSync("testName", true);
     }
 

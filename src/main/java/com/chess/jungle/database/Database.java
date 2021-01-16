@@ -78,7 +78,7 @@ public class Database {
     protected void refreshListSync() {
         try {
             ArrayList<User> userList = new ArrayList<>();
-            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM LEADERBOARD ORDER BY WIN");
+            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM LEADERBOARD ORDER BY WIN DESC");
             while (resultSet.next()) {
                 String name = resultSet.getString("PlayerName");
                 int win = resultSet.getInt("WIN");
@@ -90,6 +90,13 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void createPlayerRecord(String name, boolean won) {
+        executor.execute(() -> {
+            createPlayerRecordSync(name, won);
+            refreshListSync();
+        });
     }
 
     protected void createPlayerRecordSync(String name, boolean won) {
