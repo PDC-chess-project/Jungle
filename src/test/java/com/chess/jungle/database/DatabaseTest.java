@@ -35,7 +35,7 @@ public void after() {
 * 
 */ 
 @Test
-public void testGetInstance() throws Exception {
+public void testGetInstance() {
     database = Database.getInstance();
     Assert.assertTrue(database.checkPlayerRecord("testName"));
 } 
@@ -56,7 +56,7 @@ public void testGetLeaderBoard() {
 * 
 */ 
 @Test
-public void testCreatePlayerRecord() throws Exception { 
+public void testCreatePlayerRecord() {
     database.createPlayerRecord("createName",true);
     Assert.assertTrue(database.checkPlayerRecord("createName"));
 } 
@@ -67,7 +67,7 @@ public void testCreatePlayerRecord() throws Exception {
 * 
 */ 
 @Test
-public void testDeleteAllRecords() throws Exception { 
+public void testDeleteAllRecords() {
     database.deleteAllRecords();
     Assert.assertFalse(database.checkPlayerRecord("testName"));
 }
@@ -78,7 +78,7 @@ public void testDeleteAllRecords() throws Exception {
  *
  */
 @Test
-public void checkPlayerRecord() throws Exception {
+public void checkPlayerRecord() {
     boolean isTrue = database.checkPlayerRecord("testName");
     Assert.assertTrue(isTrue);
 }

@@ -83,9 +83,9 @@ public class Database {
     private void createLeaderBoardTable(Connection conn) {
         try {
             DatabaseMetaData metas = conn.getMetaData();
-            ResultSet tables = metas.getTables(conn.getCatalog(), null, "LeaderBoard", null);
+            ResultSet tables = metas.getTables(conn.getCatalog(), null, "LEADERBOARD", null);
             if (!tables.next()) {
-                statement.execute("CREATE TABLE LeaderBoard (PlayerName VARCHAR(15), WIN INT, LOSS INT)");
+                statement.execute("CREATE TABLE LEADERBOARD (PlayerName VARCHAR(15), WIN INT, LOSS INT)");
             }
         } catch (Exception e) {
             System.err.println("SQLException from createPlayerTable: " + e.getMessage());
@@ -101,7 +101,7 @@ public class Database {
         ResultSet rs = null;
         try {
 
-            rs = statement.executeQuery("SELECT * FROM LeaderBoard");
+            rs = statement.executeQuery("SELECT * FROM LEADERBOARD");
 
         } catch (Exception e) {
 
@@ -117,7 +117,7 @@ public class Database {
      */
     protected boolean checkPlayerRecord(String name) {
         try {
-            ResultSet rs = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
+            ResultSet rs = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LEADERBOARD WHERE PlayerName ='" + name + "'");
             return rs.next();
         }catch (SQLException e){
             e.printStackTrace();
@@ -137,9 +137,9 @@ public class Database {
             // Create record with 0 wins and losses
             if(!database.checkPlayerRecord(name)){
                 if (won) {
-                    statement.execute("INSERT INTO LeaderBoard VALUES ('" + name + "', 1, 0) ");
+                    statement.execute("INSERT INTO LEADERBOARD VALUES ('" + name + "', 1, 0) ");
                 } else {
-                    statement.execute("INSERT INTO LeaderBoard VALUES ('" + name + "', 0, 1) ");
+                    statement.execute("INSERT INTO LEADERBOARD VALUES ('" + name + "', 0, 1) ");
                 }
             }else{
                 updateRecord(name,won);
@@ -161,12 +161,12 @@ public class Database {
                 // If player just won a game, update record with +1 wins
                 if (won) {
                     int wins = playerRecord.getInt("WIN");
-                    statement.executeUpdate("UPDATE LeaderBoard SET WIN = " + (++wins) + " WHERE PlayerName ='" + name + "'");
+                    statement.executeUpdate("UPDATE LEADERBOARD SET WIN = " + (++wins) + " WHERE PlayerName ='" + name + "'");
 
                 } // Else if player just lost a game, update record with +1 losses
                 else {
                     int losses = playerRecord.getInt("LOSS");
-                    statement.executeUpdate("UPDATE LeaderBoard SET LOSS = " + (++losses) + " WHERE PlayerName ='" + name + "'");
+                    statement.executeUpdate("UPDATE LEADERBOARD SET LOSS = " + (++losses) + " WHERE PlayerName ='" + name + "'");
 
                 }
             }
@@ -182,7 +182,7 @@ public class Database {
 
         try {
             // Delete a certain player record
-            statement.execute("TRUNCATE TABLE LeaderBoard");
+            statement.execute("TRUNCATE TABLE LEADERBOARD");
         } catch (SQLException ex) {
             System.err.println("SQLException from deleteRecord: " + ex.getMessage());
         }
@@ -200,7 +200,7 @@ public class Database {
 
         try {
             // Get player record
-            playerRecord = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
+            playerRecord = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LEADERBOARD WHERE PlayerName ='" + name + "'");
 
         } catch (SQLException ex) {
             System.err.println("SQLException from getPlayerRecord: " + ex.getMessage());
