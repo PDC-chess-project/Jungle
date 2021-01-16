@@ -3,12 +3,12 @@ package com.chess.jungle.database;
 import com.chess.jungle.utils.MutableLiveData;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- *
  * @author 10926
  */
 public class Database {
@@ -22,7 +22,6 @@ public class Database {
     }
 
     /**
-     *
      * @return database
      */
     public static Database getInstance() {
@@ -43,36 +42,51 @@ public class Database {
     private void connectToDatabase() {
 
         try {
-
-            Connection conn = DriverManager.getConnection("jdbc:derby:LeaderBoard;create=true");
+//            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+            Connection conn = DriverManager.getConnection("jdbc:derby:Jungle;create=true");
             statement = conn.createStatement();
 
-            DatabaseMetaData metas = conn.getMetaData();
-            ResultSet tables = metas.getTables(conn.getCatalog(), null, "LeaderBoard", null);
-            if (!tables.next()) {
-                createLeaderBoardTable();
-            }
-        } catch (SQLException ex) {
+            createLeaderBoardTable(conn);
+
+        } catch (Exception ex) {
             System.err.println("SQLException: " + ex.getMessage());
         }
     }
 
     /**
      * set value
+     *
      * @param mutableLiveData mutableLiveData
      */
-    public void getLeaderBoard(MutableLiveData<ResultSet> mutableLiveData) {
+    public void getLeaderBoard(MutableLiveData<List<User>> mutableLiveData) {
         executorService.execute(() -> {
-            mutableLiveData.setValue(database.getLeaderBoard());
+            ResultSet resultSet = database.getLeaderBoard();
+            ArrayList<User> userList = null;
+            try {
+                resultSet.beforeFirst();
+                while (resultSet.next()) {
+                    String name = resultSet.getString("PlayerName");
+                    int win = resultSet.getInt("WIN");
+                    int loss = resultSet.getInt("LOSS");
+                    userList.add(new User(name, win, loss));
+                }
+            } catch (SQLException e) {
+
+            }
+            mutableLiveData.setValue(userList);
         });
     }
 
     /**
-     *  create table
+     * create table
      */
-    private void createLeaderBoardTable() {
+    private void createLeaderBoardTable(Connection conn) {
         try {
-            statement.execute("CREATE TABLE LeaderBoard (PlayerName VARCHAR(15), WIN INT, LOSS INT)");
+            DatabaseMetaData metas = conn.getMetaData();
+            ResultSet tables = metas.getTables(conn.getCatalog(), null, "LeaderBoard", null);
+            if (!tables.next()) {
+                statement.execute("CREATE TABLE LeaderBoard (PlayerName VARCHAR(15), WIN INT, LOSS INT)");
+            }
         } catch (Exception e) {
             System.err.println("SQLException from createPlayerTable: " + e.getMessage());
         }
@@ -80,6 +94,7 @@ public class Database {
 
     /**
      * Get all data from LeaderBoard
+     *
      * @return ResultSet rs
      */
     private ResultSet getLeaderBoard() {
@@ -97,71 +112,45 @@ public class Database {
     }
 
     /**
-     * Check if the current player name already exists
      * @param name name
-     * @return RankingHasRecord
+     * @return rs.next()
+     * @throws SQLException
      */
-    public boolean checkPlayerRecord(String name) {
+    protected boolean checkPlayerRecord(String name) throws SQLException {
 
-        boolean RankingHasRecord = false;
-
-        ResultSet allData = getLeaderBoard();
-
-        try {
-            while (allData.next()) {
-
-                String recordName = allData.getString("PlayerName");
-                if (recordName.equals(name)) {
-
-                    RankingHasRecord = true;
-                }
-            }
-        } catch (SQLException ex) {
-            System.err.println("SQLException from checkPlayerRecord: " + ex.getMessage());
+        ResultSet rs = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
+        if(!rs.next()){
+            return false;
         }
-        return RankingHasRecord;
+        return true;
     }
 
     /**
      * Insert player information
+     *
      * @param name name
      */
-    public void createPlayerRecord(String name) {
+    public void createPlayerRecord(String name, boolean won) {
 
         try {
             // Create record with 0 wins and losses
-            statement.execute("INSERT INTO LeaderBoard VALUES ('" + name + "', 0, 0)");
+            if(!database.checkPlayerRecord(name)){
+                if (won) {
+                    statement.execute("INSERT INTO LeaderBoard VALUES ('" + name + "', 1, 0) ");
+                } else {
+                    statement.execute("INSERT INTO LeaderBoard VALUES ('" + name + "', 0, 1) ");
+                }
+            }else{
+                updateRecord(name,won);
+            }
+
         } catch (SQLException ex) {
             System.err.println("SQLException from createPlayerRecord: " + ex.getMessage());
         }
     }
 
-    /**
-     * get player information
-     * @param name name
-     * @return playerRecord
-     */
-    public ResultSet getPlayerRecord(String name) {
 
-        ResultSet playerRecord = null;
-
-        try {
-            // Get player record     
-            playerRecord = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
-
-        } catch (SQLException ex) {
-            System.err.println("SQLException from getPlayerRecord: " + ex.getMessage());
-        }
-
-        return playerRecord;
-    }
-
-    /**
-     * Update the information of existing players
-     * @param name name
-     * @param won won
-     */
-    public void updateRecord(String name, boolean won) {
+    protected void updateRecord(String name, boolean won) {
 
         try {
             // First get the player record from the database
@@ -186,19 +175,6 @@ public class Database {
     }
 
     /**
-     * Delete a certain player record
-     * @param name name
-     */
-    public void deleteRecord(String name) {
-
-        try {
-            statement.execute("DELETE FROM LeaderBoard WHERE PlayerName = '" + name + "'");
-        } catch (SQLException ex) {
-            System.err.println("SQLException from deleteRecord: " + ex.getMessage());
-        }
-    }
-
-    /**
      * Delete all records in database
      */
     public void deleteAllRecords() {
@@ -211,5 +187,25 @@ public class Database {
         }
     }
 
+    /**
+     * Gets a single record from a given name
+     *
+     * @param name player record to get
+     * @return resultset of player record
+     */
+    protected ResultSet getPlayerRecord(String name) {
+
+        ResultSet playerRecord = null;
+
+        try {
+            // Get player record
+            playerRecord = statement.executeQuery("SELECT PlayerName, WIN, LOSS FROM LeaderBoard WHERE PlayerName ='" + name + "'");
+
+        } catch (SQLException ex) {
+            System.err.println("SQLException from getPlayerRecord: " + ex.getMessage());
+        }
+
+        return playerRecord;
+    }
 
 }
