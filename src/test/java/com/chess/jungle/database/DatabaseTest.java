@@ -1,98 +1,84 @@
 package com.chess.jungle.database;
 
-import com.chess.jungle.utils.MutableLiveData;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.Before; 
+import org.junit.Before;
 import org.junit.After;
 
-import java.sql.ResultSet;
-
-/** 
-* Database Tester. 
-* 
-* @author <Authors name> 
-* @since <pre>1 15, 2021</pre>
-* @version 1.0 
-*/ 
-public class DatabaseTest { 
-private Database database;
-@Before
-public void before() {
-    database = Database.getInstance();
-    database.createPlayerRecord("testName",true);
-} 
-
-@After
-public void after() {
-    database.deleteAllRecords();
-    database = null;
-} 
-
-/** 
-* 
-* Method: getInstance() 
-* 
-*/ 
-@Test
-public void testGetInstance() {
-    database = Database.getInstance();
-    Assert.assertTrue(database.checkPlayerRecord("testName"));
-} 
-
-/** 
-* 
-* Method: getLeaderBoard(MutableLiveData<List<User>> mutableLiveData) 
-* 
-*/ 
-@Test
-public void testGetLeaderBoard() {
-    database.getLeaderBoard(new MutableLiveData<>());
-} 
-
-/** 
-* 
-* Method: createPlayerRecord(String name, boolean won) 
-* 
-*/ 
-@Test
-public void testCreatePlayerRecord() {
-    database.createPlayerRecord("createName",true);
-    Assert.assertTrue(database.checkPlayerRecord("createName"));
-} 
-
-/** 
-* 
-* Method: deleteAllRecords() 
-* 
-*/ 
-@Test
-public void testDeleteAllRecords() {
-    database.deleteAllRecords();
-    Assert.assertFalse(database.checkPlayerRecord("testName"));
-}
-
 /**
+ * Database Tester.
  *
- * Method: checkPlayerRecord()
- *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>1�� 16, 2021</pre>
  */
-@Test
-public void checkPlayerRecord() {
-    boolean isTrue = database.checkPlayerRecord("testName");
-    Assert.assertTrue(isTrue);
-}
+public class DatabaseTest {
+    private Database database;
 
-/**
- *
- * Method: getPlayerRecord()
- *
- */
-@Test
-public void getPlayerRecord() throws Exception {
-    ResultSet rs = database.getPlayerRecord("testName");
-    Assert.assertTrue(rs.next());
-}
+    @Before
+    public void before() {
+        database = new Database();
+        database.connectToDatabaseSync();
+        database.createPlayerRecordSync("testName", true);
+    }
 
+    @After
+    public void after() {
+        database.deleteAllRecordsSync();
+        database = null;
+    }
 
+    @Test
+    public void testRefreshList() {
+        database.refreshListSync();
+        Assert.assertEquals(1, database.userListLiveData.get().size());
+    }
+
+    /**
+     * Method: createPlayerRecordSync(String name, boolean won)
+     */
+    @Test
+    public void testCreatePlayerRecordSyncTrue() {
+        database.createPlayerRecordSync("createName", true);
+        Assert.assertTrue(database.checkPlayerRecordSync("createName"));
+    }
+
+    /**
+     * Method: createPlayerRecordSync(String name, boolean won)
+     */
+    @Test
+    public void testCreatePlayerRecordSyncFalse() {
+        database.createPlayerRecordSync("createName", false);
+        Assert.assertTrue(database.checkPlayerRecordSync("createName"));
+    }
+
+    /**
+     * Method: updateRecordSync(String name, boolean won)
+     */
+    @Test
+    public void testUpdateRecordSyncWin() {
+        database.updateRecordSync("testName", true);
+        User user = database.getPlayerRecordSync("testName");
+        Assert.assertEquals(user.getWin(), 2);
+    }
+
+    /**
+     * Method: updateRecordSync(String name, boolean won)
+     */
+    @Test
+    public void testUpdateRecordSyncLoss() {
+        database.updateRecordSync("testName", false);
+        User user = database.getPlayerRecordSync("testName");
+        Assert.assertEquals(user.getLoss(), 1);
+    }
+
+    /**
+     * Method: deleteAllRecordsSync()
+     */
+    @Test
+    public void testDeleteAllRecordsSync() {
+        database.deleteAllRecordsSync();
+        boolean isFalse = database.checkPlayerRecordSync("testName");
+        Assert.assertFalse(isFalse);
+    }
 } 
