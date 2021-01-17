@@ -2,6 +2,10 @@ package com.chess.jungle.logic;
 
 import java.util.Arrays;
 
+/**
+ * 
+ * @author Liangwei Chen
+ */
 public class Board{
 
     public enum SquareType {

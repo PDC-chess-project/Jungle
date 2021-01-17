@@ -2,10 +2,12 @@ package com.chess.jungle.logic;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * 
+ * @author Liangwei Chen
+ */
 public class JungleGame {
 
     protected Board board;
