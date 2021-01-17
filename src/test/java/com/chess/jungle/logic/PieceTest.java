@@ -120,24 +120,21 @@ public class PieceTest {
         Piece mouse = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,0);
         Piece cat = new Piece(Piece.Type.CAT, Piece.Side.BLUE,0,0);
         Piece elephant = new Piece(Piece.Type.ELEPHANT, Piece.Side.BLUE,0,0);
+        Piece mouse2 = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,0);
         Assert.assertTrue(mouse.isBiggerThan(elephant));
         Assert.assertTrue(elephant.isBiggerThan(cat));
         Assert.assertTrue(cat.isBiggerThan(mouse));
         Assert.assertFalse(elephant.isBiggerThan(mouse));
+        Assert.assertTrue(mouse.isBiggerThan(mouse2));
     }
 
-    /**
-     * Test of toString method, of class Piece.
-     */
     @Test
-    public void testToString() {
-        System.out.println("toString");
-        Piece instance = null;
-        String expResult = "";
-        String result = instance.toString();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testEquals(){
+        Piece a = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,0);
+        Piece b = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,0);
+        Piece c = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,1);
+        Assert.assertEquals(a,b);
+        Assert.assertNotEquals(a,c);
     }
     
 }

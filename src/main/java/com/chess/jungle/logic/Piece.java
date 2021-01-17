@@ -1,5 +1,7 @@
 package com.chess.jungle.logic;
 
+import java.util.Objects;
+
 /**
  * 
  * @author Liangwei Chen
@@ -78,11 +80,11 @@ public class Piece {
 
 
     @Override
-    public String toString() {
-        return "Piece{" +
-                "type=" + type +
-                ", side=" + side +
-                ", coordinate=" + coordinate +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return type == piece.type && side == piece.side && Objects.equals(coordinate, piece.coordinate);
     }
+
 }
