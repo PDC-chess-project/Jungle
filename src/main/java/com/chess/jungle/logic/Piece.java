@@ -1,9 +1,11 @@
 package com.chess.jungle.logic;
 
-import java.util.Objects;
-
 /**
- * 
+ * Piece.
+ * Attributes of piece:
+ *      type: what kind of animal
+ *      side: it belongs to which camp
+ *      coordinate
  * @author Liangwei Chen
  */
 public class Piece {
