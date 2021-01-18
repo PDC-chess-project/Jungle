@@ -1,8 +1,8 @@
 target
-src/main/java/test
 .idea
 
 
 *.iml
 /Jungle/
 *.log
+/nbproject/

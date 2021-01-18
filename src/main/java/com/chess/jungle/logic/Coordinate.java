@@ -2,6 +2,9 @@ package com.chess.jungle.logic;
 
 import java.util.Objects;
 
+/**
+ * @author Liangwei Chen
+ */
 public class Coordinate {
     protected int x;
     protected int y;
@@ -48,19 +51,13 @@ public class Coordinate {
         return new Coordinate(nextX,nextY);
     }
 
-    @Override
-    public String toString() {
-        return "Coordinate{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
-    }
 
-    public boolean equals(Coordinate c) {
-        if(c == null){
-            return false;
-        }
-        return this.x == c.x && this.y == c.y;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coordinate that = (Coordinate) o;
+        return x == that.x && y == that.y;
     }
 
 }

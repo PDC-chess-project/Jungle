@@ -4,7 +4,6 @@ package com.chess.jungle.logic;
 import com.chess.jungle.viewModel.IJungleGame;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
