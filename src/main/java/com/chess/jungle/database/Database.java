@@ -79,7 +79,7 @@ public class Database implements IDatabase {
     protected void refreshListSync() {
         try {
             ArrayList<User> userList = new ArrayList<>();
-            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM LEADERBOARD ORDER BY WIN DESC");
+            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM LEADERBOARD ORDER BY WIN DESC, LOSS ASC");
             while (resultSet.next()) {
                 String name = resultSet.getString("PlayerName");
                 int win = resultSet.getInt("WIN");
