@@ -1,12 +1,19 @@
 package com.chess.jungle.logic;
 
 
+import com.chess.jungle.viewModel.IJungleGame;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-public class JungleGame {
+/**
+ * This class provides some functions that need to be used when the game is running.
+ * These functions will determine the movement of the pieces, whether the game is over
+ * and other operations according to the rules of the game.
+ * @author Liangwei Chen
+ */
+public class JungleGame implements IJungleGame {
 
     protected Board board;
     protected List<Piece> pieceList;
@@ -22,10 +29,12 @@ public class JungleGame {
         resetPieces();
     }
 
+    @Override
     public List<Piece> getPieceList() {
         return pieceList;
     }
 
+    @Override
     public Board getBoard() {
         return board;
     }
@@ -34,6 +43,7 @@ public class JungleGame {
      * Get winner
      * @return null, if don't have winner. Otherwise return winner's side
      */
+    @Override
     public Piece.Side getWinner() {
         return winner;
     }
@@ -78,6 +88,7 @@ public class JungleGame {
      * @param piece piece
      * @return coordinates
      */
+    @Override
     public Coordinate[] getPossibleMove(Piece piece) {
         ArrayList<Coordinate> res = new ArrayList<>();
         Coordinate tmp;
@@ -160,6 +171,7 @@ public class JungleGame {
      * @param piece piece
      * @param coordinate target coordinate
      */
+    @Override
     public void movePiece(Piece piece,Coordinate coordinate){
         if(!isMoveValid(piece,coordinate)) return;
 

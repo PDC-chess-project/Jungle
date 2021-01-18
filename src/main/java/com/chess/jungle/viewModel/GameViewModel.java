@@ -26,12 +26,12 @@ public class GameViewModel {
         return instance;
     }
 
-    protected MutableLiveData<JungleGame> currentGame = new MutableLiveData<>();
+    protected MutableLiveData<IJungleGame> currentGame = new MutableLiveData<>();
     protected MutableLiveData<Piece.Side> currentSide = new MutableLiveData<>(Piece.Side.RED);
 
     protected MutableLiveData<Piece.Side> winSide = new MutableLiveData<>();
 
-    public LiveData<JungleGame> getCurrentJungleGame() {
+    public LiveData<IJungleGame> getCurrentJungleGame() {
         return currentGame;
     }
 

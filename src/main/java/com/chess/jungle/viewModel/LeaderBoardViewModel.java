@@ -31,7 +31,7 @@ public class LeaderBoardViewModel {
     protected String redPlayerName;
     protected String bluePlayerName;
 
-    private final Database database = Database.getInstance();
+    private final IDatabase database = Database.getInstance();
 
     /**
      * Set current player names.

@@ -26,10 +26,12 @@ class BoardComponent extends BaseComponent {
 
     private Board board;
 
+    private final Element backgroundElement = new Element(SQUARE_RADIUS, SQUARE_PADDING);
+    private final Element foregroundElement = new Element(0, SQUARE_CONTENT_PADDING);
+
     public BoardComponent() {
         GameViewModel viewModel = GameViewModel.get();
-        LiveData<JungleGame> gameLiveData = viewModel.getCurrentJungleGame();
-        gameLiveData.stickyObserve((game) -> {
+        viewModel.getCurrentJungleGame().stickyObserve((game) -> {
             if (game == null) return;
             this.board = game.getBoard();
             repaint();
@@ -43,8 +45,6 @@ class BoardComponent extends BaseComponent {
         }
 
         try {
-            Element backgroundElement = new Element(SQUARE_RADIUS, SQUARE_PADDING);
-            Element foregroundElement = new Element(0, SQUARE_CONTENT_PADDING);
             Board.SquareType[][] grid = board.getGrid();
             for (int i = 0; i < grid.length; i++) {
                 Board.SquareType[] column = grid[i];

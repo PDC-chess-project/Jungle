@@ -2,6 +2,7 @@ package com.chess.jungle.database;
 
 import com.chess.jungle.utils.LiveData;
 import com.chess.jungle.utils.MutableLiveData;
+import com.chess.jungle.viewModel.IDatabase;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.concurrent.Executors;
 /**
  * @author 10926
  */
-public class Database {
+public class Database implements IDatabase {
 
     protected final MutableLiveData<List<User>> userListLiveData = new MutableLiveData<>();
 
@@ -92,6 +93,7 @@ public class Database {
         }
     }
 
+    @Override
     public void createPlayerRecord(String name, boolean won) {
         executor.execute(() -> {
             createPlayerRecordSync(name, won);
@@ -136,6 +138,7 @@ public class Database {
     /**
      * Delete all records in database
      */
+    @Override
     public void deleteAllRecords() {
         executor.execute(() -> {
             deleteAllRecordsSync();
