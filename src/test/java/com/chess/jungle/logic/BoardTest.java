@@ -34,13 +34,7 @@ public class BoardTest {
      */
     @Test
     public void testGetGrid() {
-        System.out.println("getGrid");
-        Board instance = new Board();
-        Board.SquareType[][] expResult = null;
-        Board.SquareType[][] result = instance.getGrid();
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -48,13 +42,7 @@ public class BoardTest {
      */
     @Test
     public void testGetWidth() {
-        System.out.println("getWidth");
-        Board instance = new Board();
-        int expResult = 0;
-        int result = instance.getWidth();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -62,13 +50,7 @@ public class BoardTest {
      */
     @Test
     public void testGetHeight() {
-        System.out.println("getHeight");
-        Board instance = new Board();
-        int expResult = 0;
-        int result = instance.getHeight();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -76,14 +58,7 @@ public class BoardTest {
      */
     @Test
     public void testIsInBoard_Coordinate() {
-        System.out.println("isInBoard");
-        Coordinate coordinate = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isInBoard(coordinate);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -91,15 +66,15 @@ public class BoardTest {
      */
     @Test
     public void testIsInBoard_int_int() {
-        System.out.println("isInBoard");
-        int x = 0;
-        int y = 0;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isInBoard(x, y);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Board board = new Board();
+        Assert.assertFalse(board.isInBoard(-1,-1));
+        Assert.assertFalse(board.isInBoard(-1,0));
+        Assert.assertFalse(board.isInBoard(0,-1));
+        Assert.assertFalse(board.isInBoard(7,9));
+        Assert.assertFalse(board.isInBoard(6,9));
+        Assert.assertFalse(board.isInBoard(7,8));
+        Assert.assertTrue(board.isInBoard(0,0));
+        Assert.assertTrue(board.isInBoard(6,8));
     }
 
     /**
@@ -107,14 +82,7 @@ public class BoardTest {
      */
     @Test
     public void testIsRiver() {
-        System.out.println("isRiver");
-        Coordinate c = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isRiver(c);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -122,14 +90,7 @@ public class BoardTest {
      */
     @Test
     public void testIsTrap() {
-        System.out.println("isTrap");
-        Coordinate c = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isTrap(c);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -137,14 +98,7 @@ public class BoardTest {
      */
     @Test
     public void testIsDen() {
-        System.out.println("isDen");
-        Coordinate c = null;
-        Board instance = new Board();
-        boolean expResult = false;
-        boolean result = instance.isDen(c);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**

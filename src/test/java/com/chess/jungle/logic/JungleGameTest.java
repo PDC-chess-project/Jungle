@@ -36,13 +36,7 @@ public class JungleGameTest {
      */
     @Test
     public void testGetPieceList() {
-        System.out.println("getPieceList");
-        JungleGame instance = new JungleGame();
-        List<Piece> expResult = null;
-        List<Piece> result = instance.getPieceList();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -50,13 +44,7 @@ public class JungleGameTest {
      */
     @Test
     public void testGetBoard() {
-        System.out.println("getBoard");
-        JungleGame instance = new JungleGame();
-        Board expResult = null;
-        Board result = instance.getBoard();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -64,13 +52,7 @@ public class JungleGameTest {
      */
     @Test
     public void testGetWinner() {
-        System.out.println("getWinner");
-        JungleGame instance = new JungleGame();
-        Piece.Side expResult = null;
-        Piece.Side result = instance.getWinner();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -78,11 +60,7 @@ public class JungleGameTest {
      */
     @Test
     public void testResetPieces() {
-        System.out.println("resetPieces");
-        JungleGame instance = new JungleGame();
-        instance.resetPieces();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -90,14 +68,7 @@ public class JungleGameTest {
      */
     @Test
     public void testGetPossibleMove() {
-        System.out.println("getPossibleMove");
-        Piece piece = null;
-        JungleGame instance = new JungleGame();
-        Coordinate[] expResult = null;
-        Coordinate[] result = instance.getPossibleMove(piece);
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -105,13 +76,15 @@ public class JungleGameTest {
      */
     @Test
     public void testMovePiece() {
-        System.out.println("movePiece");
-        Piece piece = null;
-        Coordinate coordinate = null;
-        JungleGame instance = new JungleGame();
-        instance.movePiece(piece, coordinate);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        JungleGame game = new JungleGame();
+        Piece piece = game.findPieceByPos(new Coordinate(0,0));
+        //valid movement
+        game.movePiece(piece,new Coordinate(0,1));
+        Assert.assertEquals(new Coordinate(0,1),piece.getCoordinate());
+        piece = game.findPieceByPos(new Coordinate(2,2));
+        //invalid movement
+        game.movePiece(piece,new Coordinate(2,3));
+        Assert.assertNotEquals(new Coordinate(2,3),piece.getCoordinate());
     }
 
     /**
@@ -131,14 +104,7 @@ public class JungleGameTest {
      */
     @Test
     public void testFindPiecesByType() {
-        System.out.println("findPiecesByType");
-        Piece.Type type = null;
-        JungleGame instance = new JungleGame();
-        Piece[] expResult = null;
-        Piece[] result = instance.findPiecesByType(type);
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -161,15 +127,11 @@ public class JungleGameTest {
      */
     @Test
     public void testIsDenAccessible() {
-        System.out.println("isDenAccessible");
-        Coordinate c = null;
-        Piece.Side side = null;
-        JungleGame instance = new JungleGame();
-        boolean expResult = false;
-        boolean result = instance.isDenAccessible(c, side);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        JungleGame game = new JungleGame();
+        Assert.assertTrue(game.isDenAccessible(new Coordinate(3,0), Piece.Side.BLUE));
+        Assert.assertFalse(game.isDenAccessible(new Coordinate(3,0), Piece.Side.RED));
+        Assert.assertTrue(game.isDenAccessible(new Coordinate(3,8), Piece.Side.RED));
+        Assert.assertFalse(game.isDenAccessible(new Coordinate(3,7), Piece.Side.RED));
     }
 
     /**
@@ -189,15 +151,23 @@ public class JungleGameTest {
      */
     @Test
     public void testAnimalAbleToFight() {
-        System.out.println("animalAbleToFight");
-        Piece attacker = null;
-        Piece defender = null;
-        JungleGame instance = new JungleGame();
-        boolean expResult = false;
-        boolean result = instance.animalAbleToFight(attacker, defender);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        JungleGame game = new JungleGame();
+        //in the same side
+        Piece p1 = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,1);
+        Piece p2 = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,0);
+        Assert.assertFalse(game.animalAbleToFight(p1,p2));
+        //one is in river and another is on land
+        p1 = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,1,3);
+        p2 = new Piece(Piece.Type.ELEPHANT, Piece.Side.RED,0,3);
+        Assert.assertFalse(game.animalAbleToFight(p1,p2));
+        //attack is not bigger than defender
+        p1 = new Piece(Piece.Type.ELEPHANT, Piece.Side.BLUE,0,3);
+        p2 = new Piece(Piece.Type.MOUSE, Piece.Side.RED,0,3);
+        Assert.assertFalse(game.animalAbleToFight(p1,p2));
+        p1 = new Piece(Piece.Type.MOUSE, Piece.Side.BLUE,0,3);
+        p2 = new Piece(Piece.Type.ELEPHANT, Piece.Side.RED,0,3);
+        Assert.assertTrue(game.animalAbleToFight(p1,p2));
+
     }
     
 }

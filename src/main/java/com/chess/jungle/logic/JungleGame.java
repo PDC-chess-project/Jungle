@@ -103,7 +103,7 @@ public class JungleGame implements IJungleGame {
         if((tmp = isMovable(piece,Direction.RIGHT)) != null){
             res.add(tmp);
         }
-
+        
         return res.toArray(new Coordinate[0]);
     }
 
@@ -321,6 +321,5 @@ public class JungleGame implements IJungleGame {
         }
         return attacker.isBiggerThan(defender);
     }
-
 
 }

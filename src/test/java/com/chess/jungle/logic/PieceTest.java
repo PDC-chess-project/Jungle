@@ -34,13 +34,7 @@ public class PieceTest {
      */
     @Test
     public void testGetType() {
-        System.out.println("getType");
-        Piece instance = null;
-        Piece.Type expResult = null;
-        Piece.Type result = instance.getType();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -48,13 +42,7 @@ public class PieceTest {
      */
     @Test
     public void testGetX() {
-        System.out.println("getX");
-        Piece instance = null;
-        int expResult = 0;
-        int result = instance.getX();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -62,13 +50,7 @@ public class PieceTest {
      */
     @Test
     public void testGetY() {
-        System.out.println("getY");
-        Piece instance = null;
-        int expResult = 0;
-        int result = instance.getY();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -76,13 +58,7 @@ public class PieceTest {
      */
     @Test
     public void testGetSide() {
-        System.out.println("getSide");
-        Piece instance = null;
-        Piece.Side expResult = null;
-        Piece.Side result = instance.getSide();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -90,12 +66,7 @@ public class PieceTest {
      */
     @Test
     public void testSetCoordinate() {
-        System.out.println("setCoordinate");
-        Coordinate coordinate = null;
-        Piece instance = null;
-        instance.setCoordinate(coordinate);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
@@ -103,13 +74,7 @@ public class PieceTest {
      */
     @Test
     public void testGetCoordinate() {
-        System.out.println("getCoordinate");
-        Piece instance = null;
-        Coordinate expResult = null;
-        Coordinate result = instance.getCoordinate();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }
 
     /**
