@@ -19,7 +19,7 @@ public class Game {
             UiUtils.setGlobalFont(new Font("Arial", Font.PLAIN, 18));
             UiUtils.setSystemLookAndFeel();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {
-            ErrorViewModel.get().setError(e);
+            System.out.println("Failed to set system look and feel.");
         }
         new MainWindow().setVisible(true);
     }

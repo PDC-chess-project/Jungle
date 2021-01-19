@@ -154,7 +154,7 @@ public final class MainWindow extends JFrame {
     private void openRuleDialog() {
         JOptionPane.showMessageDialog(this,
                 "The player who is first to maneuver any one of their pieces into the opponent's den wins the game.\n\n" +
-                        "Ranking: Mouse > Elephant > Lion > Tiger > Leopard > Dog > Wolf > Cat > Mouse.\n" +
+                        "Ranking: Mouse > Elephant > Lion > Tiger > Leopard > Wolf > Dog > Cat > Mouse.\n" +
                         "The mouse is the only animal that may go onto a water square.\n" +
                         "The lion and tiger can jump over a river horizontally or vertically.\n" +
                         "A piece that enters one of the opponent's trap squares is reduced in rank to 0.",
