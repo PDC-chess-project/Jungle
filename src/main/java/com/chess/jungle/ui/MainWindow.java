@@ -17,6 +17,10 @@ import java.io.IOException;
  */
 public final class MainWindow extends JFrame {
 
+    private final static String TITLE = "Jungle game";
+    private final static Dimension DEFAULT_SIZE = new Dimension(1000, 800);
+    private final static Dimension MIN_SIZE = new Dimension(560, 750);
+
     private final GameViewModel gameViewModel = GameViewModel.get();
     private final ErrorViewModel errorViewModel = ErrorViewModel.get();
     private final LeaderBoardViewModel leaderBoardViewModel = LeaderBoardViewModel.get();
@@ -88,9 +92,9 @@ public final class MainWindow extends JFrame {
     }
 
     private void initWindow() {
-        setTitle("Jungle game");
-        setSize(1000, 800);
-        setMinimumSize(new Dimension(560, 750));
+        setTitle(TITLE);
+        setSize(DEFAULT_SIZE);
+        setMinimumSize(MIN_SIZE);
         setLocationByPlatform(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(new CustomPanel());
